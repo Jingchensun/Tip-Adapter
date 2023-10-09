@@ -43,14 +43,14 @@ def run_tip_adapter(cfg, cache_keys, cache_values, test_features, test_labels, c
     _ = search_hp(cfg, cache_keys, cache_values, test_features, test_labels, clip_weights)
 
 
-def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels, clip_weights, clip_model, train_loader_F):
+def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels, clip_weights, clip_model, ):
     
     # Enable the cached keys to be learnable
     adapter = nn.Linear(cache_keys.shape[0], cache_keys.shape[1], bias=False).to(clip_model.dtype).cuda()
     adapter.weight = nn.Parameter(cache_keys.t())
     
     optimizer = torch.optim.AdamW(adapter.parameters(), lr=cfg['lr'], eps=1e-4)
-    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, cfg['train_epoch'] * len(train_loader_F))
+    scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, cfg['train_epoch'] * len())
     
     beta, alpha = cfg['init_beta'], cfg['init_alpha']
     best_acc, best_epoch = 0.0, 0
@@ -62,7 +62,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
         loss_list = []
         print('Train Epoch: {:} / {:}'.format(train_idx, cfg['train_epoch']))
 
-        for i, (images, target) in enumerate(tqdm(train_loader_F)):
+        for i, (images, target) in enumerate(tqdm()):
             images, target = images.cuda(), target.cuda()
             with torch.no_grad():
                 image_features = clip_model.encode_image(images)
@@ -110,6 +110,34 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
     _ = search_hp(cfg, affinity, cache_values, test_features, test_labels, clip_weights, adapter=adapter)
 
 
+def clclip_loss(image_embeds, text_embeds):
+    exp = 100.
+    cylambda1 = cylambda2=0.5
+    batch_size = 256
+    criterion = F.cross_entropy()
+    target = torch.arange(batch_size).long()
+
+    logits_text_per_image = exp * image_embeds @ text_embeds.t()
+    logits_image_per_text = logits_text_per_image.t()
+
+    crossmodal_contrastive_loss = (criterion(logits_text_per_image, target) + criterion(logits_image_per_text, target)) / 2
+    contrastive_loss = crossmodal_contrastive_loss
+
+    inmodal_cyclic_loss = torch.tensor(0).cuda()
+    if(cylambda1 > 0):
+        logits_image_per_image = exp * image_embeds @ image_embeds.t()
+        logits_text_per_text = exp * text_embeds @ text_embeds.t()
+        inmodal_cyclic_loss = (logits_image_per_image - logits_text_per_text).square().mean() / (exp * exp) * batch_size
+    
+    crossmodal_cyclic_loss = torch.tensor(0).cuda()
+    if(cylambda2 > 0):
+        crossmodal_cyclic_loss = (logits_text_per_image - logits_image_per_text).square().mean() / (exp * exp) * batch_size
+
+    cyclic_loss = cylambda1 * inmodal_cyclic_loss + cylambda2 * crossmodal_cyclic_loss
+    loss = contrastive_loss + cyclic_loss
+
+
+
 def main():
 
     # Load config file
@@ -139,7 +167,7 @@ def main():
     test_loader = torch.utils.data.DataLoader(imagenet.test, batch_size=64, num_workers=8, shuffle=False)
 
     train_loader_cache = torch.utils.data.DataLoader(imagenet.train, batch_size=256, num_workers=8, shuffle=False)
-    train_loader_F = torch.utils.data.DataLoader(imagenet.train, batch_size=256, num_workers=8, shuffle=True)
+     = torch.utils.data.DataLoader(imagenet.train, batch_size=256, num_workers=8, shuffle=True)
 
     # Textual features
     print("Getting textual features as CLIP's classifier.")
@@ -157,7 +185,7 @@ def main():
     run_tip_adapter(cfg, cache_keys, cache_values, test_features, test_labels, clip_weights)
 
     # ------------------------------------------ Tip-Adapter-F ------------------------------------------
-    run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels, clip_weights, clip_model, train_loader_F)
+    run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels, clip_weights, clip_model, )
            
 
 if __name__ == '__main__':
