@@ -68,6 +68,8 @@ def build_cache_model(cfg, clip_model, train_loader_cache):
 
         torch.save(cache_keys, cfg['cache_dir'] + '/keys_' + str(cfg['shots']) + "shots.pt")
         torch.save(cache_values, cfg['cache_dir'] + '/values_' + str(cfg['shots']) + "shots.pt")
+    print("cache_values:", cache_values.size()) #torch.Size([1616, 101])
+    print("cache_keys:", cache_keys.size()) #torch.Size([512, 1616])
 
     return cache_keys, cache_values
 

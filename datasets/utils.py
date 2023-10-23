@@ -281,8 +281,9 @@ class DatasetBase:
 
 
 class DatasetWrapper(TorchDataset):
-    def __init__(self, data_source, input_size, transform=None, is_train=False,
+    def __init__(self, template, data_source, input_size, transform=None, is_train=False,
                  return_img0=False, k_tfm=1):
+        self.template = template
         self.data_source = data_source
         self.transform = transform # accept list (tuple) as input
         self.is_train = is_train
@@ -316,7 +317,8 @@ class DatasetWrapper(TorchDataset):
         output = {
             'label': item.label,
             'domain': item.domain,
-            'impath': item.impath
+            'impath': item.impath,
+            "classname": item.classname
         }
 
         img0 = read_image(item.impath)
@@ -335,8 +337,9 @@ class DatasetWrapper(TorchDataset):
 
         if self.return_img0:
             output['img0'] = self.to_tensor(img0)
+        text = [t.format(output['classname']) for t in self.template]
 
-        return output['img'], output['label']
+        return output['img'], output['label'], text
 
     def _transform_image(self, tfm, img0):
         img_list = []
@@ -352,6 +355,7 @@ class DatasetWrapper(TorchDataset):
 
 
 def build_data_loader(
+    template,
     data_source=None,
     batch_size=64,
     input_size=224,
@@ -366,7 +370,7 @@ def build_data_loader(
 
     # Build data loader
     data_loader = torch.utils.data.DataLoader(
-        dataset_wrapper(data_source, input_size=input_size, transform=tfm, is_train=is_train),
+        dataset_wrapper(template, data_source, input_size=input_size, transform=tfm, is_train=is_train),
         batch_size=batch_size,
         num_workers=8,
         shuffle=shuffle,
