@@ -14,6 +14,7 @@ from datasets.utils import build_data_loader
 import clip
 from utils import *
 from torch.distributions.gamma import Gamma
+import json
 
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 a_u = 1
@@ -114,7 +115,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
     beta, alpha = cfg['init_beta'], cfg['init_alpha']
     best_acc, best_epoch = 0.0, 0
 
-    for train_idx in range(cfg['train_epoch']):
+    for train_idx in range(cfg['train_epoch']): #cfg['train_epoch']
         # Train
         adapter.train()
         correct_samples, all_samples = 0, 0
@@ -123,28 +124,22 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
 
         for i, (images, target) in enumerate(tqdm(train_loader_F)):
             images, target = images.cuda(), target.cuda()
-            print("target:", target)
+            # print("target:", target)
             with torch.no_grad():
                 image_features = clip_model.encode_image(images)
                 image_features /= image_features.norm(dim=-1, keepdim=True)
-                print("image_features:", image_features.size())
+                # print("image_features:", image_features.size())
 
             affinity = adapter(image_features)
             cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values
             clip_logits = 100. * image_features @ clip_weights
             tip_logits = clip_logits + cache_logits * alpha
-            print("tip_logits:", tip_logits.size())
-            print("cache_logits:", cache_logits.size())
+            # print("tip_logits:", tip_logits.size())
+            # print("cache_logits:", cache_logits.size())
 
-            weights = torch.ones(256, 256).to(device)
-            for i in range(2):
-                U = sample_u(weights, tip_logits)
-                weights = sample_w(U, tip_logits)
+            loss = F.cross_entropy(tip_logits, target)
 
-            weighted_sim = weights * tip_logits
-            loss = F.cross_entropy(weighted_sim, target)
-
-            acc = cls_acc(weights * tip_logits, target)
+            acc = cls_acc(tip_logits, target)
             correct_samples += acc / 100 * len(tip_logits)
             all_samples += len(tip_logits)
             loss_list.append(loss.item())
@@ -171,7 +166,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             best_acc = acc
             best_epoch = train_idx
             torch.save(adapter.weight, cfg['cache_dir'] + "/best_F_" + str(cfg['shots']) + "shots.pt")
-    
+
     adapter.weight = torch.load(cfg['cache_dir'] + "/best_F_" + str(cfg['shots']) + "shots.pt")
     print(f"**** After fine-tuning, Tip-Adapter-F's best test accuracy: {best_acc:.2f}, at epoch: {best_epoch}. ****\n")
 
@@ -188,6 +183,8 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
     tip_logits = clip_logits + cache_logits * best_alpha
     acc = cls_acc(tip_logits, test_labels)
     print("**** Tip-Adapter-F's test accuracy: {:.2f}. ****\n".format(max(best_acc, acc)))
+
+    return max(best_acc, acc)
 
 
 def main():
@@ -211,46 +208,60 @@ def main():
     clip_model.eval()
 
     # Prepare dataset
-    random.seed(1)
-    torch.manual_seed(1)
+    origin_acc = {}
+    for seed in range(cfg['seed']):
+        random.seed(seed)
+        torch.manual_seed(seed)
+        print("Seed=", seed)
+
+        print("Preparing dataset.")
+        dataset = build_dataset(cfg['dataset'], cfg['root_path'], cfg['shots'])
+
+        val_loader = build_data_loader(data_source=dataset.val, batch_size=64, is_train=False, tfm=preprocess, shuffle=False)
+        test_loader = build_data_loader(data_source=dataset.test, batch_size=64, is_train=False, tfm=preprocess, shuffle=False)
+
+        train_tranform = transforms.Compose([
+            transforms.RandomResizedCrop(size=224, scale=(0.5, 1), interpolation=transforms.InterpolationMode.BICUBIC),
+            transforms.RandomHorizontalFlip(p=0.5),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=(0.48145466, 0.4578275, 0.40821073), std=(0.26862954, 0.26130258, 0.27577711))
+        ])
+
+        train_loader_cache = build_data_loader(data_source=dataset.train_x, batch_size=256, tfm=train_tranform, is_train=True, shuffle=False)
+        train_loader_F = build_data_loader(data_source=dataset.train_x, batch_size=256, tfm=train_tranform, is_train=True, shuffle=True)
+
+        # Textual features
+        print("\nGetting textual features as CLIP's classifier.")
+        clip_weights = clip_classifier(dataset.classnames, dataset.template, clip_model)
+
+        # Construct the cache model by few-shot training set
+        print("\nConstructing cache model by few-shot visual features and labels.")
+        cache_keys, cache_values = build_cache_model(cfg, clip_model, train_loader_cache)
+
+        # Pre-load val features
+        print("\nLoading visual features and labels from val set.")
+        val_features, val_labels = pre_load_features(cfg, "val", clip_model, val_loader)
+
+        # Pre-load test features
+        print("\nLoading visual features and labels from test set.")
+        test_features, test_labels = pre_load_features(cfg, "test", clip_model, test_loader)
+
+        # ------------------------------------------ Tip-Adapter ------------------------------------------
+        # run_tip_adapter(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights)
+
+        # ------------------------------------------ Tip-Adapter-F ------------------------------------------
+        best_acc = run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights, clip_model, train_loader_F)
+
+        origin_acc[("origin_acc"+str(seed))] = best_acc
     
-    print("Preparing dataset.")
-    dataset = build_dataset(cfg['dataset'], cfg['root_path'], cfg['shots'])
-
-    val_loader = build_data_loader(data_source=dataset.val, batch_size=64, is_train=False, tfm=preprocess, shuffle=False)
-    test_loader = build_data_loader(data_source=dataset.test, batch_size=64, is_train=False, tfm=preprocess, shuffle=False)
-
-    train_tranform = transforms.Compose([
-        transforms.RandomResizedCrop(size=224, scale=(0.5, 1), interpolation=transforms.InterpolationMode.BICUBIC),
-        transforms.RandomHorizontalFlip(p=0.5),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=(0.48145466, 0.4578275, 0.40821073), std=(0.26862954, 0.26130258, 0.27577711))
-    ])
-
-    train_loader_cache = build_data_loader(data_source=dataset.train_x, batch_size=256, tfm=train_tranform, is_train=True, shuffle=False)
-    train_loader_F = build_data_loader(data_source=dataset.train_x, batch_size=256, tfm=train_tranform, is_train=True, shuffle=True)
-
-    # Textual features
-    print("\nGetting textual features as CLIP's classifier.")
-    clip_weights = clip_classifier(dataset.classnames, dataset.template, clip_model)
-
-    # Construct the cache model by few-shot training set
-    print("\nConstructing cache model by few-shot visual features and labels.")
-    cache_keys, cache_values = build_cache_model(cfg, clip_model, train_loader_cache)
-
-    # Pre-load val features
-    print("\nLoading visual features and labels from val set.")
-    val_features, val_labels = pre_load_features(cfg, "val", clip_model, val_loader)
-
-    # Pre-load test features
-    print("\nLoading visual features and labels from test set.")
-    test_features, test_labels = pre_load_features(cfg, "test", clip_model, test_loader)
-
-    # ------------------------------------------ Tip-Adapter ------------------------------------------
-    # run_tip_adapter(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights)
-
-    # ------------------------------------------ Tip-Adapter-F ------------------------------------------
-    run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights, clip_model, train_loader_F)
+    file_path = "./output/" + str(cfg['dataset']) + '.json'
+    values = list(origin_acc.values())
+    mean = sum(values) / len(values)
+    origin_acc["mean"] = mean
+    if not os.path.exists(file_path):
+        os.makedirs(os.path.dirname(file_path))
+    with open(file_path, 'a',encoding='utf-8') as file:
+        json.dump(origin_acc, file, indent=4, ensure_ascii=False)
            
 
 if __name__ == '__main__':
