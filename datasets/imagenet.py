@@ -185,7 +185,7 @@ imagenet_templates = ["itap of a {}.",
 
 class ImageNet():
 
-    dataset_dir = 'imagenet'
+    dataset_dir = 'data/imagenet'
 
     def __init__(self, root, num_shots, preprocess):
 

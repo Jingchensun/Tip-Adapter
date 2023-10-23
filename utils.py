@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import torch.nn as nn
 
 import clip
-
+import os
 
 def cls_acc(output, target, topk=1):
     pred = output.topk(topk, 1, True, True)[1].t()
@@ -36,8 +36,13 @@ def clip_classifier(classnames, template, clip_model):
 
 
 def build_cache_model(cfg, clip_model, train_loader_cache):
-
-    if cfg['load_cache'] == False:    
+    file_path = cfg['cache_dir'] + '/keys_' + str(cfg['shots']) + "shots.pt"
+    if os.path.exists(file_path):
+        # load_cache = True
+        cache_keys = torch.load(cfg['cache_dir'] + '/keys_' + str(cfg['shots']) + "shots.pt")
+        cache_values = torch.load(cfg['cache_dir'] + '/values_' + str(cfg['shots']) + "shots.pt")
+    else:
+    # if cfg['load_cache'] == False:    
         cache_keys = []
         cache_values = []
 
@@ -64,16 +69,17 @@ def build_cache_model(cfg, clip_model, train_loader_cache):
         torch.save(cache_keys, cfg['cache_dir'] + '/keys_' + str(cfg['shots']) + "shots.pt")
         torch.save(cache_values, cfg['cache_dir'] + '/values_' + str(cfg['shots']) + "shots.pt")
 
-    else:
-        cache_keys = torch.load(cfg['cache_dir'] + '/keys_' + str(cfg['shots']) + "shots.pt")
-        cache_values = torch.load(cfg['cache_dir'] + '/values_' + str(cfg['shots']) + "shots.pt")
-
     return cache_keys, cache_values
 
 
 def pre_load_features(cfg, split, clip_model, loader):
-
-    if cfg['load_pre_feat'] == False:
+    
+    file_path = cfg['cache_dir'] + "/" + split + "_f.pt"
+    if os.path.exists(file_path):
+        features = torch.load(cfg['cache_dir'] + "/" + split + "_f.pt")
+        labels = torch.load(cfg['cache_dir'] + "/" + split + "_l.pt")
+    else:
+    # if cfg['load_pre_feat'] == False:
         features, labels = [], []
 
         with torch.no_grad():
@@ -88,10 +94,6 @@ def pre_load_features(cfg, split, clip_model, loader):
 
         torch.save(features, cfg['cache_dir'] + "/" + split + "_f.pt")
         torch.save(labels, cfg['cache_dir'] + "/" + split + "_l.pt")
-   
-    else:
-        features = torch.load(cfg['cache_dir'] + "/" + split + "_f.pt")
-        labels = torch.load(cfg['cache_dir'] + "/" + split + "_l.pt")
     
     return features, labels
 

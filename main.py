@@ -209,7 +209,7 @@ def main():
 
     # Prepare dataset
     origin_acc = {}
-    for seed in range(cfg['seed']):
+    for seed in range(3):
         random.seed(seed)
         torch.manual_seed(seed)
         print("Seed=", seed)
@@ -258,8 +258,8 @@ def main():
     values = list(origin_acc.values())
     mean = sum(values) / len(values)
     origin_acc["mean"] = mean
-    if not os.path.exists(file_path):
-        os.makedirs(os.path.dirname(file_path))
+    # if not os.path.exists(file_path):
+    #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:
         json.dump(origin_acc, file, indent=4, ensure_ascii=False)
            

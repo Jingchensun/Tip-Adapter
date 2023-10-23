@@ -10,7 +10,7 @@ template = ['a photo of a person doing {}.']
 
 class UCF101(DatasetBase):
 
-    dataset_dir = 'ucf101'
+    dataset_dir = 'data/ucf101'
 
     def __init__(self, root, num_shots):
         self.dataset_dir = os.path.join(root, self.dataset_dir)
