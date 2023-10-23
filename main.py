@@ -13,6 +13,15 @@ from datasets import build_dataset
 from datasets.utils import build_data_loader
 import clip
 from utils import *
+from torch.distributions.gamma import Gamma
+
+device = "cuda:0" if torch.cuda.is_available() else "cpu"
+a_u = 1
+b_u = 1
+a_minus = 10
+b_minus = 1
+a_plus = 5
+b_plus = 1
 
 
 def get_arguments():
@@ -62,9 +71,39 @@ def run_tip_adapter(cfg, cache_keys, cache_values, val_features, val_labels, tes
     acc = cls_acc(tip_logits, test_labels)
     print("**** Tip-Adapter's test accuracy: {:.2f}. ****\n".format(acc))
 
+def sample_w(U, s_matrix):
+    BS = s_matrix.shape[0]
+    s_plus = s_matrix.masked_select(torch.eye(BS).bool().to(device))
+    s_minus = s_matrix.masked_select(~torch.eye(BS).bool().to(device))
+
+    w_plus_dist = Gamma(torch.tensor(1+a_plus).float().to(device), U*s_plus + b_plus)
+    U = U.repeat_interleave(int(BS-1))
+    w_minus_dist = Gamma(torch.tensor(a_minus).float().to(device), U*s_minus + b_minus)
+
+    w_plus = w_plus_dist.sample()
+    w_minus = w_minus_dist.sample()
+
+    result = torch.zeros(BS, BS).to(device)
+    diagonal_matrix = torch.diag(w_plus)
+
+    result += diagonal_matrix
+    mask = ~torch.eye(BS, dtype=bool)  
+    result[mask] = w_minus
+    # print("w_matrix:", result)
+    return result
+
+def sample_u(w_matrix, sim_matrix):
+    full_mat = w_matrix * sim_matrix
+    rate_param = b_u + full_mat.sum(dim=1)
+    u_dist = Gamma(torch.tensor(a_u).float().to(device),\
+            rate_param.float())
+    # print(rate_param)
+    # print(u_dist.sample())
+    return u_dist.sample()
 
 def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights, clip_model, train_loader_F):
     
+
     # Enable the cached keys to be learnable
     adapter = nn.Linear(cache_keys.shape[0], cache_keys.shape[1], bias=False).to(clip_model.dtype).cuda()
     adapter.weight = nn.Parameter(cache_keys.t())
@@ -84,16 +123,29 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
 
         for i, (images, target) in enumerate(tqdm(train_loader_F)):
             images, target = images.cuda(), target.cuda()
+            print("target:", target)
             with torch.no_grad():
                 image_features = clip_model.encode_image(images)
                 image_features /= image_features.norm(dim=-1, keepdim=True)
+                print("image_features:", image_features.size())
 
             affinity = adapter(image_features)
             cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values
             clip_logits = 100. * image_features @ clip_weights
             tip_logits = clip_logits + cache_logits * alpha
+            print("tip_logits:", tip_logits.size())
+            print("cache_logits:", cache_logits.size())
 
-            loss = F.cross_entropy(tip_logits, target)
+            weights = torch.ones(256, 256).to(device)
+            for i in range(2):
+                U = sample_u(weights, tip_logits)
+                weights = sample_w(U, tip_logits)
+
+            weighted_sim = weights * tip_logits
+            loss = F.cross_entropy(weighted_sim, target)
+
+
+           
 
             acc = cls_acc(tip_logits, target)
             correct_samples += acc / 100 * len(tip_logits)
@@ -157,7 +209,8 @@ def main():
     print(cfg, "\n")
 
     # CLIP
-    clip_model, preprocess = clip.load(cfg['backbone'])
+
+    clip_model, preprocess = clip.load(cfg['backbone'], device=device)
     clip_model.eval()
 
     # Prepare dataset
@@ -197,7 +250,7 @@ def main():
     test_features, test_labels = pre_load_features(cfg, "test", clip_model, test_loader)
 
     # ------------------------------------------ Tip-Adapter ------------------------------------------
-    run_tip_adapter(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights)
+    # run_tip_adapter(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights)
 
     # ------------------------------------------ Tip-Adapter-F ------------------------------------------
     run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights, clip_model, train_loader_F)
