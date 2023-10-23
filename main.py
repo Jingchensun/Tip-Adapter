@@ -144,10 +144,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             weighted_sim = weights * tip_logits
             loss = F.cross_entropy(weighted_sim, target)
 
-
-           
-
-            acc = cls_acc(tip_logits, target)
+            acc = cls_acc(weights * tip_logits, target)
             correct_samples += acc / 100 * len(tip_logits)
             all_samples += len(tip_logits)
             loss_list.append(loss.item())
