@@ -33,44 +33,85 @@ def get_arguments():
 
     return args
 
-
-def run_tip_adapter(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights):
+def load_clip_to_cpu(cfg):
+    backbone_name = cfg.MODEL.BACKBONE.NAME
+    url = clip._MODELS[backbone_name]
+    model_path = clip._download(url)
     
-    print("\n-------- Searching hyperparameters on the val set. --------")
-
-    # Zero-shot CLIP
-    clip_logits = 100. * val_features @ clip_weights
-    acc = cls_acc(clip_logits, val_labels)
-    print("\n**** Zero-shot CLIP's val accuracy: {:.2f}. ****\n".format(acc))
-
-    # Tip-Adapter
-    beta, alpha = cfg['init_beta'], cfg['init_alpha']
+    try:
+        # loading JIT archive
+        model = torch.jit.load(model_path, map_location='cpu').eval()
+        state_dict = None
     
-    affinity = val_features @ cache_keys
-    cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values
+    except RuntimeError:
+        state_dict = torch.load(model_path, map_location='cpu')
     
-    tip_logits = clip_logits + cache_logits * alpha
-    acc = cls_acc(tip_logits, val_labels)
-    print("**** Tip-Adapter's val accuracy: {:.2f}. ****\n".format(acc))
+    model = clip.build_model(state_dict or model.state_dict())
 
-    # Search Hyperparameters
-    best_beta, best_alpha = search_hp(cfg, cache_keys, cache_values, val_features, val_labels, clip_weights)
+    return model
 
+class Adapter(nn.Module):
+    def __init__(self, c_in, reduction=4):
+        super(Adapter, self).__init__()
+        self.fc = nn.Sequential(
+            nn.Linear(c_in, c_in // reduction, bias=False),
+            nn.ReLU(inplace=True),
+            nn.Linear(c_in // reduction, c_in, bias=False),
+            nn.ReLU(inplace=True)
+        )
 
-    print("\n-------- Evaluating on the test set. --------")
-
-    # Zero-shot CLIP
-    clip_logits = 100. * test_features @ clip_weights
-    acc = cls_acc(clip_logits, test_labels)
-    print("\n**** Zero-shot CLIP's test accuracy: {:.2f}. ****\n".format(acc))
-
-    # Tip-Adapter    
-    affinity = test_features @ cache_keys
-    cache_logits = ((-1) * (best_beta - best_beta * affinity)).exp() @ cache_values
+    def forward(self, x):
+        x = self.fc(x)
+        return x
     
-    tip_logits = clip_logits + cache_logits * best_alpha
-    acc = cls_acc(tip_logits, test_labels)
-    print("**** Tip-Adapter's test accuracy: {:.2f}. ****\n".format(acc))
+    
+# class TextEncoder(nn.Module):
+
+#     def __init__(self, cfg, classnames, clip_model):
+#         super().__init__()
+#         self.cfg = cfg
+#         self.classnames = classnames
+#         self.clip_model = clip_model
+#         self.dtype = clip_model.dtype
+    
+#     def forward(self):
+#         temp = CUSTOM_TEMPLATES[self.cfg.DATASET.NAME]
+#         prompts = [temp.format(c.replace('_', ' ')) for c in self.classnames]
+#         prompts = torch.cat([clip.tokenize(p) for p in prompts])
+#         prompts = prompts.to('cuda')
+#         text_features = self.clip_model.encode_text(prompts)
+#         x = text_features
+#         return x
+
+
+class CustomCLIP(nn.Module):
+
+    def __init__(self, clip_model):
+        super().__init__()
+        self.image_encoder = clip_model.encode_image
+        self.text_encoder = clip_model.encode_text
+        self.logit_scale = clip_model.logit_scale
+        self.dtype = clip_model.dtype
+        self.adapter = Adapter(512, 4).to(clip_model.dtype)
+
+            
+    def forward(self, image):
+        image_features = self.image_encoder(image.type(self.dtype))
+        x = self.adapter(image_features)
+
+        ratio = 0.2
+        # image_features = ratio * x + (1 - ratio) * image_features
+        image_features = x
+
+        text_features = self.text_encoder()
+
+        image_features = image_features / image_features.norm(dim=-1, keepdim=True)
+        text_features = text_features / text_features.norm(dim=-1, keepdim=True)
+
+        logit_scale = self.logit_scale.exp()
+        logits = logit_scale * image_features @ text_features.t()
+
+        return logits
 
 def sample_w(U, s_matrix):
     BS = s_matrix.shape[0]
@@ -105,26 +146,30 @@ def sample_u(w_matrix, sim_matrix):
 def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights, clip_model, train_loader_F, template):
     
 
-    # Enable the cached keys to be learnable
-    adapter = nn.Linear(512, 512, bias=True).to(clip_model.dtype).cuda()
-    # adapter.weight = nn.Parameter(cache_keys.t())
-    torch.nn.init.kaiming_normal_(adapter.weight)
+    # clip_model = load_clip_to_cpu(cfg)
+    # clip_model.float()
+    model = Adapter(512, 4).to(clip_model.dtype)
+
+    # model = CustomCLIP(clip_model)
+    # for name, param in model.named_parameters():
+    #     if 'adapter' not in name:
+    #         param.requires_grad_(False)
     
-    optimizer = torch.optim.AdamW(adapter.parameters(), lr=cfg['lr'], eps=1e-4)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=cfg['lr'], eps=1e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, cfg['train_epoch'] * len(train_loader_F))
-    
+
     beta, alpha = cfg['init_beta'], cfg['init_alpha']
     best_acc, best_epoch = 0.0, 0
-
+    
     for train_idx in range(cfg['train_epoch']): #cfg['train_epoch']
         # Train
-        adapter.train()
+        model.train().cuda()
         correct_samples, all_samples = 0, 0
         loss_list = []
         print('Train Epoch: {:} / {:}'.format(train_idx, cfg['train_epoch']))
 
         for i, (images, target, text) in enumerate(tqdm(train_loader_F)):
-            # print(text[0])
+            #print(text[0])
             text = clip.tokenize(text[0]).cuda()
             images, target = images.cuda(), target.cuda()
             # print("target:", target) #torch.Size([256])
@@ -132,13 +177,13 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             with torch.no_grad():
                 image_features = clip_model.encode_image(images)
                 image_features /= image_features.norm(dim=-1, keepdim=True)
-                print("image_features:", image_features.size()) #torch.Size([256, 512])
+                # print("image_features:", image_features.size()) #torch.Size([256, 512])
 
                 text_features = clip_model.encode_text(text)
                 text_features /= text_features.norm(dim=-1, keepdim=True)
-            affinity = adapter(image_features)
+            affinity =model(image_features)
             clip_logits = torch.exp(affinity @ text_features.t())
-            # print("clip_logits:", clip_logits.size())
+            print("clip_logits:", clip_logits)
             groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
             # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
             # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values # cache_values torch.Size([1616, 101])
@@ -163,9 +208,9 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
         print('LR: {:.6f}, Acc: {:.4f} ({:}/{:}), Loss: {:.4f}'.format(current_lr, correct_samples / all_samples, correct_samples, all_samples, sum(loss_list)/len(loss_list)))
 
         # Eval
-        adapter.eval()
+        model.eval()
 
-        affinity = adapter(test_features)
+        affinity = model(test_features)
         clip_logits = torch.exp(affinity @ text_features.t())
         # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values
         # clip_logits = 100. * test_features @ clip_weights
@@ -177,9 +222,9 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
         if acc > best_acc:
             best_acc = acc
             best_epoch = train_idx
-            torch.save(adapter.weight, cfg['cache_dir'] + "/best_F_" + str(cfg['shots']) + "shots.pt")
+            torch.save(model, cfg['cache_dir'] + "/best_F_" + str(cfg['shots']) + "shots.pt")
 
-    adapter.weight = torch.load(cfg['cache_dir'] + "/best_F_" + str(cfg['shots']) + "shots.pt")
+    model = torch.load(cfg['cache_dir'] + "/best_F_" + str(cfg['shots']) + "shots.pt")
     print(f"**** After fine-tuning, Tip-Adapter-F's best test accuracy: {best_acc:.2f}, at epoch: {best_epoch}. ****\n")
 
     # print("\n-------- Searching hyperparameters on the val set. --------")
