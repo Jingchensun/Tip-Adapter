@@ -160,7 +160,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
 
     beta, alpha = cfg['init_beta'], cfg['init_alpha']
     best_acc, best_epoch = 0.0, 0
-    
+    cfg['train_epoch'] = 100
     for train_idx in range(cfg['train_epoch']): #cfg['train_epoch']
         # Train
         model.train().cuda()
@@ -182,8 +182,8 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
                 text_features = clip_model.encode_text(text)
                 text_features /= text_features.norm(dim=-1, keepdim=True)
             affinity =model(image_features)
-            clip_logits = torch.exp(affinity @ text_features.t())
-            print("clip_logits:", clip_logits)
+            clip_logits = 10. * torch.exp(affinity @ text_features.t())
+            # print("clip_logits:", clip_logits)
             groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
             # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
             # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values # cache_values torch.Size([1616, 101])
@@ -194,9 +194,11 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
 
             loss = F.cross_entropy(clip_logits, groundtruth)
 
-            acc = cls_acc(clip_logits, target)
-            correct_samples += acc / 100 * len(clip_logits)
-            all_samples += len(clip_logits)
+            tip_logits = 10. * torch.exp(affinity @ clip_weights)
+            # print("tip_logits:", tip_logits)
+            acc = cls_acc(tip_logits, target)
+            correct_samples += acc / 100 * len(tip_logits)
+            all_samples += len(tip_logits)
             loss_list.append(loss.item())
 
             optimizer.zero_grad()
@@ -211,12 +213,13 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
         model.eval()
 
         affinity = model(test_features)
-        clip_logits = torch.exp(affinity @ text_features.t())
+        # clip_logits = torch.exp(affinity @ text_features.t())
         # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values
         # clip_logits = 100. * test_features @ clip_weights
         # tip_logits = clip_logits + cache_logits * alpha
+        tip_logits = 10. * torch.exp(affinity @ clip_weights)
 
-        acc = cls_acc(clip_logits, test_labels)
+        acc = cls_acc(tip_logits, test_labels)
 
         print("**** Tip-Adapter-F's test accuracy: {:.2f}. ****\n".format(acc))
         if acc > best_acc:

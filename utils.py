@@ -26,12 +26,17 @@ def clip_classifier(classnames, template, clip_model):
             texts = clip.tokenize(texts).cuda()
             # prompt ensemble for ImageNet
             class_embeddings = clip_model.encode_text(texts)
+            # print("class_embedding1:", class_embeddings.size()) #torch.Size([1, 512])
             class_embeddings /= class_embeddings.norm(dim=-1, keepdim=True)
+            # print("class_embedding2:", class_embeddings.size()) #torch.Size([1, 512])
             class_embedding = class_embeddings.mean(dim=0)
+            # print("class_embedding3:", class_embedding.size()) #torch.Size([512])
             class_embedding /= class_embedding.norm()
+            # print("class_embedding4:", class_embedding.size()) #torch.Size([512])
             clip_weights.append(class_embedding)
 
         clip_weights = torch.stack(clip_weights, dim=1).cuda()
+        # print("clip_weights5:", clip_weights.size()) # torch.Size([512, 101])
     return clip_weights
 
 
