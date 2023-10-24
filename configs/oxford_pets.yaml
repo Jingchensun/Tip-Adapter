@@ -3,11 +3,11 @@ root_path: ''
 
 
 # ------ Load Cache and Features ------
-# load_cache: False
-# load_pre_feat: False
+load_cache: False
+load_pre_feat: False
 
-load_cache: True
-load_pre_feat: True
+# load_cache: True
+# load_pre_feat: True
 
 
 # ------ Hyperparamters ------
