@@ -193,6 +193,8 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             # print("cache_logits:", cache_logits.size())
 
             loss = F.cross_entropy(clip_logits, groundtruth)
+            # loss2 = F.cross_entropy(clip_logits.T, groundtruth)
+            # loss = (loss1 + loss2)/2
 
             tip_logits = 10. * torch.exp(affinity @ clip_weights)
             # print("tip_logits:", tip_logits)
