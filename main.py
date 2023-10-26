@@ -182,7 +182,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
                 text_features = clip_model.encode_text(text)
                 text_features /= text_features.norm(dim=-1, keepdim=True)
             affinity =model(image_features)
-            clip_logits = 10. * torch.exp(affinity @ text_features.t())
+            clip_logits = 10. * torch.exp(affinity @  clip_weights)
             # print("clip_logits:", clip_logits)
             groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
             # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
@@ -192,7 +192,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             # print("tip_logits:", tip_logits.size())
             # print("cache_logits:", cache_logits.size())
 
-            loss = F.cross_entropy(clip_logits, groundtruth)
+            loss = F.cross_entropy(clip_logits, target)
 
             tip_logits = 10. * torch.exp(affinity @ clip_weights)
             # print("tip_logits:", tip_logits)
