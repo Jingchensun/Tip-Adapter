@@ -157,7 +157,7 @@ def sample_u(w_matrix, sim_matrix):
     # print(u_dist.sample())
     return u_dist.sample()
 
-def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights, clip_model, train_loader_F, template):
+def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels, clip_weights, clip_model, train_loader_F, template, idx_to_class):
     
 
     # clip_model = load_clip_to_cpu(cfg)
@@ -182,8 +182,11 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
         loss_list = []
         print('Train Epoch: {:} / {:}'.format(train_idx, cfg['train_epoch']))
 
-        for i, (images, target, text) in enumerate(tqdm(train_loader_F)):
-            #print(text[0])
+        for i, (images, target) in enumerate(tqdm(train_loader_F)):
+            text = idx_to_class[target]
+
+
+
             text = clip.tokenize(text[0]).cuda()
             images, target = images.cuda(), target.cuda()
             # print("target:", target) #torch.Size([256])
@@ -292,6 +295,7 @@ def main():
 
         print("Preparing ImageNet dataset.")
         imagenet = ImageNet(cfg['root_path'], cfg['shots'], preprocess)
+        idx_to_class = imagenet.idx_to_class
 
         test_loader = torch.utils.data.DataLoader(imagenet.test, batch_size=64, num_workers=8, shuffle=False)
 
@@ -309,12 +313,38 @@ def main():
         # Pre-load test features
         print("\nLoading visual features and labels from test set.")
         test_features, test_labels = pre_load_features(cfg, "test", clip_model, test_loader)
+        # print("Preparing dataset.")
+        # dataset = build_dataset(cfg['dataset'], cfg['root_path'], cfg['shots'])
+
+        # test_loader = build_data_loader(dataset.template, data_source=dataset.test, batch_size=64, is_train=False, tfm=preprocess, shuffle=False)
+
+        # train_tranform = transforms.Compose([
+        #     transforms.RandomResizedCrop(size=224, scale=(0.5, 1), interpolation=transforms.InterpolationMode.BICUBIC),
+        #     transforms.RandomHorizontalFlip(p=0.5),
+        #     transforms.ToTensor(),
+        #     transforms.Normalize(mean=(0.48145466, 0.4578275, 0.40821073), std=(0.26862954, 0.26130258, 0.27577711))
+        # ])
+
+        # train_loader_cache = build_data_loader(dataset.template, data_source=dataset.train, batch_size=256, tfm=train_tranform, is_train=True, shuffle=False)
+        # train_loader_F = build_data_loader(dataset.template, data_source=dataset.train, batch_size=256, tfm=train_tranform, is_train=True, shuffle=True)
+        
+        # # Textual features
+        # print("\nGetting textual features as CLIP's classifier.")
+        # clip_weights = clip_classifier(dataset.classnames, dataset.template, clip_model)
+
+        # # Construct the cache model by few-shot training set
+        # print("\nConstructing cache model by few-shot visual features and labels.")
+        # cache_keys, cache_values = build_cache_model(cfg, clip_model, train_loader_cache)
+
+        # # Pre-load test features
+        # print("\nLoading visual features and labels from test set.")
+        # test_features, test_labels = pre_load_features(cfg, "test", clip_model, test_loader)
 
         # ------------------------------------------ Tip-Adapter ------------------------------------------
         # run_tip_adapter(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights)
 
         # ------------------------------------------ Tip-Adapter-F ------------------------------------------
-        best_acc=run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels, clip_weights, clip_model, train_loader_F, imagenet.template)
+        best_acc=run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels, clip_weights, clip_model, train_loader_F, imagenet.template, idx_to_class)
 
         origin_acc[("origin_acc"+str(seed))] = best_acc
     
@@ -322,7 +352,7 @@ def main():
     values = list(origin_acc.values())
     mean = sum(values) / len(values)
     origin_acc["mean"] = mean
-    origin_acc["task"] = "loss=loss1+loss2"
+    origin_acc["task"] = "adapter-loss=loss1+loss2"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:

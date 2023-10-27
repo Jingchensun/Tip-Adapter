@@ -6,6 +6,7 @@ from collections import defaultdict
 import torch
 import torchvision
 import torchvision.transforms as transforms
+import clip
 
 
 imagenet_classes = ["tench", "goldfish", "great white shark", "tiger shark", "hammerhead shark", "electric ray",
@@ -182,15 +183,18 @@ imagenet_templates = ["itap of a {}.",
                         "art of the {}.",
                         "a photo of the small {}."]
 
+template = ['a photo of a {}.']
 
 class ImageNet():
 
     dataset_dir = 'data/imagenet'
 
     def __init__(self, root, num_shots, preprocess):
+        # _, preprocess = clip.load('ViT-B/16', device="cuda")
 
         self.dataset_dir = os.path.join(root, self.dataset_dir)
         self.image_dir = os.path.join(self.dataset_dir, 'images')
+        # self.template = template
 
         train_preprocess = transforms.Compose([
                                                 transforms.RandomResizedCrop(size=224, scale=(0.5, 1), interpolation=transforms.InterpolationMode.BICUBIC),
@@ -201,6 +205,10 @@ class ImageNet():
         test_preprocess = preprocess
 
         self.train = torchvision.datasets.ImageNet(self.image_dir, split='train', transform=train_preprocess)
+
+        self.class_to_idx = self.train.class_to_idx
+        self.idx_to_class = {v: k for k, v in self.class_to_idx.items()}
+
         self.val = torchvision.datasets.ImageNet(self.image_dir, split='val', transform=test_preprocess)
         self.test = torchvision.datasets.ImageNet(self.image_dir, split='val', transform=test_preprocess)
         

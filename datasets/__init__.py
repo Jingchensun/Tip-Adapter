@@ -8,6 +8,7 @@ from .fgvc import FGVCAircraft
 from .food101 import Food101
 from .oxford_flowers import OxfordFlowers
 from .stanford_cars import StanfordCars
+from .imagenet import ImageNet
 
 
 dataset_list = {
@@ -21,8 +22,9 @@ dataset_list = {
                 "food101": Food101,
                 "oxford_flowers": OxfordFlowers,
                 "stanford_cars": StanfordCars,
+                "imagenet": ImageNet
                 }
 
 
 def build_dataset(dataset, root_path, shots):
-    return dataset_list[dataset](root_path, shots)
+        return dataset_list[dataset](root_path, shots)
