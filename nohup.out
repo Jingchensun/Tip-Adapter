@@ -13963,3 +13963,784 @@ LR: 0.000000, Acc: 0.8595 (1389.0/1616), Loss: 1.0104
 
 **** After fine-tuning, Tip-Adapter-F's best test accuracy: 71.03, at epoch: 47. ****
 
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [12, 10], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 2, 'dataset': 'eurosat', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 100, 'cache_dir': './caches/eurosat'} 
+
+Seed= 0
+Preparing dataset.
+Reading split from data/eurosat/split_zhou_EuroSAT.json
+Creating a 16-shot dataset
+
+Getting textual features as CLIP's classifier.
+
+Constructing cache model by few-shot visual features and labels.
+cache_values: torch.Size([160, 10])
+cache_keys: torch.Size([512, 160])
+
+Loading visual features and labels from val set.
+
+Loading visual features and labels from test set.
+Train Epoch: 0 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:01<00:00,  1.52s/it]100%|██████████| 1/1 [00:01<00:00,  1.59s/it]
+LR: 0.001000, Acc: 0.0875 (14.0/160), Loss: 5.0703
+**** Tip-Adapter-F's test accuracy: 33.99. ****
+
+Train Epoch: 1 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  1.18it/s]100%|██████████| 1/1 [00:00<00:00,  1.09it/s]
+LR: 0.000999, Acc: 0.3312 (53.0/160), Loss: 5.0117
+**** Tip-Adapter-F's test accuracy: 37.83. ****
+
+Train Epoch: 2 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  1.18it/s]100%|██████████| 1/1 [00:00<00:00,  1.08it/s]
+LR: 0.000998, Acc: 0.4000 (64.0/160), Loss: 4.8320
+**** Tip-Adapter-F's test accuracy: 36.69. ****
+
+Train Epoch: 3 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  1.15it/s]100%|██████████| 1/1 [00:00<00:00,  1.04it/s]
+LR: 0.000996, Acc: 0.4375 (70.0/160), Loss: 4.5312
+**** Tip-Adapter-F's test accuracy: 40.04. ****
+
+Train Epoch: 4 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  1.14it/s]100%|██████████| 1/1 [00:00<00:00,  1.05it/s]
+LR: 0.000994, Acc: 0.4625 (74.0/160), Loss: 4.2656
+**** Tip-Adapter-F's test accuracy: 54.88. ****
+
+Train Epoch: 5 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  1.17it/s]100%|██████████| 1/1 [00:00<00:00,  1.07it/s]
+LR: 0.000991, Acc: 0.5375 (86.0/160), Loss: 4.2344
+**** Tip-Adapter-F's test accuracy: 45.49. ****
+
+Train Epoch: 6 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  1.13it/s]100%|██████████| 1/1 [00:00<00:00,  1.04it/s]
+LR: 0.000988, Acc: 0.5625 (90.0/160), Loss: 4.0391
+**** Tip-Adapter-F's test accuracy: 53.00. ****
+
+Train Epoch: 7 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  1.13it/s]100%|██████████| 1/1 [00:00<00:00,  1.05it/s]
+LR: 0.000984, Acc: 0.6000 (96.0/160), Loss: 3.8789
+**** Tip-Adapter-F's test accuracy: 62.40. ****
+
+Train Epoch: 8 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  1.12it/s]
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [50, 50], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 10, 'dataset': 'oxford_flowers', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/oxford_flowers'} 
+
+Seed= 0
+Preparing dataset.
+Reading split from data/oxford_flowers/split_zhou_OxfordFlowers.json
+Creating a 16-shot dataset
+
+Getting textual features as CLIP's classifier.
+
+Constructing cache model by few-shot visual features and labels.
+cache_values: torch.Size([1632, 102])
+cache_keys: torch.Size([512, 1632])
+
+Loading visual features and labels from val set.
+
+Loading visual features and labels from test set.
+Train Epoch: 0 / 100
+  0%|          | 0/7 [00:00<?, ?it/s]100%|██████████| 1/1 [00:01<00:00,  1.01s/it]
+LR: 0.000980, Acc: 0.7562 (121.0/160), Loss: 3.7148
+**** Tip-Adapter-F's test accuracy: 69.04. ****
+
+Train Epoch: 9 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  1.01it/s]100%|██████████| 1/1 [00:01<00:00,  1.08s/it]
+LR: 0.000976, Acc: 0.7063 (113.0/160), Loss: 3.6797
+**** Tip-Adapter-F's test accuracy: 70.32. ****
+
+Train Epoch: 10 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  1.04it/s]100%|██████████| 1/1 [00:01<00:00,  1.04s/it]
+LR: 0.000970, Acc: 0.7562 (121.0/160), Loss: 3.5430
+**** Tip-Adapter-F's test accuracy: 71.05. ****
+
+Train Epoch: 11 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  1.12it/s]100%|██████████| 1/1 [00:00<00:00,  1.03it/s]
+LR: 0.000965, Acc: 0.7875 (126.0/160), Loss: 3.5625
+**** Tip-Adapter-F's test accuracy: 72.28. ****
+
+Train Epoch: 12 / 100
+  0%|          | 0/1 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:03<00:19,  3.19s/it] 29%|██▊       | 2/7 [00:03<00:07,  1.48s/it] 43%|████▎     | 3/7 [00:03<00:03,  1.08it/s] 57%|█████▋    | 4/7 [00:04<00:02,  1.50it/s]100%|██████████| 1/1 [00:00<00:00,  1.06it/s]100%|██████████| 1/1 [00:01<00:00,  1.01s/it]
+LR: 0.000959, Acc: 0.7875 (126.0/160), Loss: 3.4746
+**** Tip-Adapter-F's test accuracy: 72.63. ****
+
+Train Epoch: 13 / 100
+  0%|          | 0/1 [00:00<?, ?it/s] 71%|███████▏  | 5/7 [00:04<00:01,  1.90it/s] 86%|████████▌ | 6/7 [00:04<00:00,  2.27it/s]100%|██████████| 7/7 [00:04<00:00,  3.01it/s]100%|██████████| 7/7 [00:04<00:00,  1.47it/s]
+LR: 0.000994, Acc: 0.0729 (119.0/1632), Loss: 4.7307
+**** Tip-Adapter-F's test accuracy: 22.45. ****
+
+Train Epoch: 1 / 100
+  0%|          | 0/7 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  1.11it/s]100%|██████████| 1/1 [00:00<00:00,  1.00it/s]
+LR: 0.000952, Acc: 0.8125 (130.0/160), Loss: 3.4531
+**** Tip-Adapter-F's test accuracy: 75.58. ****
+
+Train Epoch: 14 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  1.03it/s]100%|██████████| 1/1 [00:01<00:00,  1.06s/it]
+LR: 0.000946, Acc: 0.8750 (140.0/160), Loss: 3.3516
+**** Tip-Adapter-F's test accuracy: 77.41. ****
+
+Train Epoch: 15 / 100
+  0%|          | 0/1 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:02<00:12,  2.09s/it] 29%|██▊       | 2/7 [00:02<00:05,  1.02s/it]100%|██████████| 1/1 [00:00<00:00,  1.11it/s]100%|██████████| 1/1 [00:00<00:00,  1.02it/s]
+LR: 0.000938, Acc: 0.8812 (141.0/160), Loss: 3.3262
+**** Tip-Adapter-F's test accuracy: 77.09. ****
+
+Train Epoch: 16 / 100
+  0%|          | 0/1 [00:00<?, ?it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.47it/s] 57%|█████▋    | 4/7 [00:02<00:01,  1.92it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.32it/s]100%|██████████| 1/1 [00:00<00:00,  1.14it/s]100%|██████████| 1/1 [00:00<00:00,  1.06it/s]
+LR: 0.000930, Acc: 0.8938 (143.0/160), Loss: 3.2695
+**** Tip-Adapter-F's test accuracy: 77.65. ****
+
+Train Epoch: 17 / 100
+  0%|          | 0/1 [00:00<?, ?it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.65it/s]100%|██████████| 7/7 [00:03<00:00,  3.39it/s]100%|██████████| 7/7 [00:03<00:00,  1.90it/s]
+LR: 0.000976, Acc: 0.4167 (680.0/1632), Loss: 2.8943
+**** Tip-Adapter-F's test accuracy: 59.20. ****
+
+Train Epoch: 2 / 100
+  0%|          | 0/7 [00:00<?, ?it/s]
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [12, 10], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 1.17, 'dataset': 'sun397', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/sun397'} 
+
+Seed= 0
+Preparing dataset.
+Reading split from data/sun397/split_zhou_SUN397.json
+Creating a 16-shot dataset
+
+Getting textual features as CLIP's classifier.
+
+Constructing cache model by few-shot visual features and labels.
+cache_values: torch.Size([6352, 397])
+cache_keys: torch.Size([512, 6352])
+
+Loading visual features and labels from val set.
+
+Loading visual features and labels from test set.
+Train Epoch: 0 / 100
+  0%|          | 0/25 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  1.03it/s]100%|██████████| 1/1 [00:01<00:00,  1.09s/it]
+LR: 0.000922, Acc: 0.9187 (147.0/160), Loss: 3.2344
+**** Tip-Adapter-F's test accuracy: 79.75. ****
+
+Train Epoch: 18 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:01<00:00,  1.31s/it]100%|██████████| 1/1 [00:01<00:00,  1.41s/it]
+LR: 0.000914, Acc: 0.9313 (149.0/160), Loss: 3.1836
+**** Tip-Adapter-F's test accuracy: 81.06. ****
+
+Train Epoch: 19 / 100
+  0%|          | 0/1 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:02<00:16,  2.67s/it] 29%|██▊       | 2/7 [00:02<00:06,  1.26s/it]100%|██████████| 1/1 [00:00<00:00,  1.03it/s] 43%|████▎     | 3/7 [00:03<00:03,  1.23it/s]100%|██████████| 1/1 [00:01<00:00,  1.08s/it]
+LR: 0.000905, Acc: 0.9062 (145.0/160), Loss: 3.1641
+**** Tip-Adapter-F's test accuracy: 80.44. ****
+
+Train Epoch: 20 / 100
+  0%|          | 0/1 [00:00<?, ?it/s] 57%|█████▋    | 4/7 [00:03<00:01,  1.67it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.07it/s] 86%|████████▌ | 6/7 [00:04<00:00,  2.43it/s]100%|██████████| 7/7 [00:04<00:00,  3.21it/s]100%|██████████| 7/7 [00:04<00:00,  1.65it/s]
+LR: 0.000946, Acc: 0.7096 (1158.0/1632), Loss: 2.0392
+**** Tip-Adapter-F's test accuracy: 78.40. ****
+
+Train Epoch: 3 / 100
+  0%|          | 0/7 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  1.04it/s]100%|██████████| 1/1 [00:01<00:00,  1.07s/it]
+LR: 0.000895, Acc: 0.9062 (145.0/160), Loss: 3.1641
+**** Tip-Adapter-F's test accuracy: 80.07. ****
+
+Train Epoch: 21 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:01<00:00,  1.25s/it]100%|██████████| 1/1 [00:01<00:00,  1.38s/it]
+LR: 0.000885, Acc: 0.9187 (147.0/160), Loss: 3.1406
+**** Tip-Adapter-F's test accuracy: 79.75. ****
+
+Train Epoch: 22 / 100
+  0%|          | 0/1 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:02<00:13,  2.31s/it]  4%|▍         | 1/25 [00:06<02:37,  6.57s/it]100%|██████████| 1/1 [00:01<00:00,  1.03s/it] 29%|██▊       | 2/7 [00:02<00:05,  1.11s/it]100%|██████████| 1/1 [00:01<00:00,  1.13s/it]
+LR: 0.000875, Acc: 0.9375 (150.0/160), Loss: 3.1602
+**** Tip-Adapter-F's test accuracy: 78.47. ****
+
+Train Epoch: 23 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]  8%|▊         | 2/25 [00:06<01:05,  2.87s/it] 43%|████▎     | 3/7 [00:02<00:02,  1.36it/s] 12%|█▏        | 3/25 [00:07<00:37,  1.68s/it] 57%|█████▋    | 4/7 [00:03<00:01,  1.81it/s] 16%|█▌        | 4/25 [00:07<00:23,  1.13s/it] 71%|███████▏  | 5/7 [00:03<00:00,  2.21it/s] 20%|██        | 5/25 [00:07<00:16,  1.22it/s]100%|██████████| 1/1 [00:01<00:00,  1.02s/it] 86%|████████▌ | 6/7 [00:03<00:00,  2.56it/s]100%|██████████| 1/1 [00:01<00:00,  1.13s/it]
+LR: 0.000864, Acc: 0.9313 (149.0/160), Loss: 3.1152
+**** Tip-Adapter-F's test accuracy: 79.46. ****
+
+Train Epoch: 24 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 7/7 [00:03<00:00,  3.35it/s] 24%|██▍       | 6/25 [00:07<00:11,  1.58it/s]100%|██████████| 7/7 [00:03<00:00,  1.80it/s]
+LR: 0.000905, Acc: 0.8548 (1395.0/1632), Loss: 1.6803
+**** Tip-Adapter-F's test accuracy: 85.71. ****
+
+Train Epoch: 4 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 28%|██▊       | 7/25 [00:08<00:09,  1.94it/s] 32%|███▏      | 8/25 [00:08<00:07,  2.29it/s]100%|██████████| 1/1 [00:01<00:00,  1.23s/it]100%|██████████| 1/1 [00:01<00:00,  1.39s/it]
+LR: 0.000854, Acc: 0.9437 (151.0/160), Loss: 3.0977
+**** Tip-Adapter-F's test accuracy: 82.02. ****
+
+Train Epoch: 25 / 100
+  0%|          | 0/1 [00:00<?, ?it/s] 36%|███▌      | 9/25 [00:09<00:08,  1.78it/s] 40%|████      | 10/25 [00:10<00:09,  1.51it/s]100%|██████████| 1/1 [00:01<00:00,  1.04s/it]100%|██████████| 1/1 [00:01<00:00,  1.15s/it] 44%|████▍     | 11/25 [00:10<00:07,  1.85it/s]
+LR: 0.000842, Acc: 0.9375 (150.0/160), Loss: 3.0977
+**** Tip-Adapter-F's test accuracy: 82.43. ****
+
+Train Epoch: 26 / 100
+  0%|          | 0/1 [00:00<?, ?it/s] 48%|████▊     | 12/25 [00:10<00:05,  2.17it/s] 14%|█▍        | 1/7 [00:02<00:17,  2.85s/it] 52%|█████▏    | 13/25 [00:11<00:04,  2.48it/s] 29%|██▊       | 2/7 [00:03<00:06,  1.33s/it] 56%|█████▌    | 14/25 [00:11<00:03,  2.76it/s] 43%|████▎     | 3/7 [00:03<00:03,  1.18it/s]100%|██████████| 1/1 [00:01<00:00,  1.01s/it] 60%|██████    | 15/25 [00:11<00:03,  2.98it/s]100%|██████████| 1/1 [00:01<00:00,  1.14s/it]
+LR: 0.000831, Acc: 0.9313 (149.0/160), Loss: 3.0332
+**** Tip-Adapter-F's test accuracy: 81.52. ****
+
+Train Epoch: 27 / 100
+  0%|          | 0/1 [00:00<?, ?it/s] 57%|█████▋    | 4/7 [00:03<00:01,  1.61it/s] 64%|██████▍   | 16/25 [00:11<00:02,  3.17it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.02it/s] 86%|████████▌ | 6/7 [00:04<00:00,  2.38it/s]100%|██████████| 7/7 [00:04<00:00,  3.15it/s]100%|██████████| 7/7 [00:04<00:00,  1.58it/s]
+LR: 0.000854, Acc: 0.9056 (1478.0/1632), Loss: 1.5243
+**** Tip-Adapter-F's test accuracy: 89.48. ****
+
+Train Epoch: 5 / 100
+  0%|          | 0/7 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  1.02it/s]100%|██████████| 1/1 [00:01<00:00,  1.09s/it]
+LR: 0.000819, Acc: 0.9688 (155.0/160), Loss: 3.0332
+**** Tip-Adapter-F's test accuracy: 80.84. ****
+
+Train Epoch: 28 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:01<00:00,  1.07s/it]100%|██████████| 1/1 [00:01<00:00,  1.19s/it]
+LR: 0.000806, Acc: 0.9563 (153.0/160), Loss: 3.0371
+**** Tip-Adapter-F's test accuracy: 80.38. ****
+
+Train Epoch: 29 / 100
+  0%|          | 0/1 [00:00<?, ?it/s] 68%|██████▊   | 17/25 [00:13<00:06,  1.16it/s] 72%|███████▏  | 18/25 [00:14<00:05,  1.35it/s] 14%|█▍        | 1/7 [00:02<00:12,  2.08s/it] 76%|███████▌  | 19/25 [00:14<00:03,  1.67it/s]100%|██████████| 1/1 [00:00<00:00,  1.08it/s] 29%|██▊       | 2/7 [00:02<00:05,  1.02s/it]100%|██████████| 1/1 [00:00<00:00,  1.00it/s]
+LR: 0.000794, Acc: 0.9688 (155.0/160), Loss: 3.0391
+**** Tip-Adapter-F's test accuracy: 79.89. ****
+
+Train Epoch: 30 / 100
+  0%|          | 0/1 [00:00<?, ?it/s] 80%|████████  | 20/25 [00:14<00:02,  2.00it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.45it/s] 84%|████████▍ | 21/25 [00:15<00:01,  2.32it/s] 57%|█████▋    | 4/7 [00:02<00:01,  1.91it/s] 88%|████████▊ | 22/25 [00:15<00:01,  2.61it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.30it/s] 92%|█████████▏| 23/25 [00:15<00:00,  2.87it/s]100%|██████████| 1/1 [00:00<00:00,  1.12it/s]100%|██████████| 1/1 [00:00<00:00,  1.04it/s]
+LR: 0.000781, Acc: 0.9938 (159.0/160), Loss: 2.9727
+**** Tip-Adapter-F's test accuracy: 80.37. ****
+
+Train Epoch: 31 / 100
+  0%|          | 0/1 [00:00<?, ?it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.63it/s] 96%|█████████▌| 24/25 [00:16<00:00,  3.08it/s]100%|██████████| 7/7 [00:03<00:00,  3.44it/s]100%|██████████| 7/7 [00:03<00:00,  1.91it/s]
+LR: 0.000794, Acc: 0.9485 (1548.0/1632), Loss: 1.4307
+**** Tip-Adapter-F's test accuracy: 90.99. ****
+
+Train Epoch: 6 / 100
+  0%|          | 0/7 [00:00<?, ?it/s]100%|██████████| 25/25 [00:16<00:00,  2.50it/s]100%|██████████| 25/25 [00:16<00:00,  1.50it/s]
+LR: 0.000994, Acc: 0.1448 (920.0/6352), Loss: 3.5013
+**** Tip-Adapter-F's test accuracy: 38.54. ****
+
+Train Epoch: 1 / 100
+  0%|          | 0/25 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  1.10it/s]100%|██████████| 1/1 [00:01<00:00,  1.01s/it]
+LR: 0.000768, Acc: 0.9500 (152.0/160), Loss: 2.9805
+**** Tip-Adapter-F's test accuracy: 81.86. ****
+
+Train Epoch: 32 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:01<00:00,  1.21s/it]100%|██████████| 1/1 [00:01<00:00,  1.32s/it]
+LR: 0.000755, Acc: 0.9437 (151.0/160), Loss: 2.9902
+**** Tip-Adapter-F's test accuracy: 82.98. ****
+
+Train Epoch: 33 / 100
+  0%|          | 0/1 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:02<00:13,  2.29s/it] 29%|██▊       | 2/7 [00:02<00:05,  1.10s/it]  0%|          | 0/25 [00:02<?, ?it/s]
+Traceback (most recent call last):
+  File "main.py", line 330, in <module>
+    main()
+  File "main.py", line 315, in main
+    best_acc = run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights, clip_model, train_loader_F, dataset.template)
+  File "main.py", line 171, in run_tip_adapter_F
+    for i, (images, target, text) in enumerate(tqdm(train_loader_F)):
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/tqdm/std.py", line 1182, in __iter__
+    for obj in iterable:
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 634, in __next__
+    data = self._next_data()
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 1329, in _next_data
+    idx, data = self._get_data()
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 1285, in _get_data
+    success, data = self._try_get_data()
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 1133, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/queue.py", line 179, in get
+    self.not_empty.wait(remaining)
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/threading.py", line 306, in wait
+    gotit = waiter.acquire(True, timeout)
+KeyboardInterrupt
+ 43%|████▎     | 3/7 [00:02<00:02,  1.38it/s]100%|██████████| 1/1 [00:01<00:00,  1.04s/it] 57%|█████▋    | 4/7 [00:03<00:01,  1.80it/s]100%|██████████| 1/1 [00:01<00:00,  1.12s/it]
+LR: 0.000741, Acc: 0.9812 (157.0/160), Loss: 2.9668
+**** Tip-Adapter-F's test accuracy: 83.56. ****
+
+Train Epoch: 34 / 100
+  0%|          | 0/1 [00:00<?, ?it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.17it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.47it/s]100%|██████████| 7/7 [00:03<00:00,  3.25it/s]100%|██████████| 7/7 [00:03<00:00,  1.79it/s]
+LR: 0.000727, Acc: 0.9663 (1577.0/1632), Loss: 1.3843
+**** Tip-Adapter-F's test accuracy: 92.45. ****
+
+Train Epoch: 7 / 100
+  0%|          | 0/7 [00:00<?, ?it/s]100%|██████████| 1/1 [00:01<00:00,  1.00s/it]100%|██████████| 1/1 [00:01<00:00,  1.12s/it]
+LR: 0.000727, Acc: 0.9563 (153.0/160), Loss: 2.9883
+**** Tip-Adapter-F's test accuracy: 83.20. ****
+
+Train Epoch: 35 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/7 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "main.py", line 330, in <module>
+    main()
+  File "main.py", line 315, in main
+    best_acc = run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights, clip_model, train_loader_F, dataset.template)
+  File "main.py", line 171, in run_tip_adapter_F
+    for i, (images, target, text) in enumerate(tqdm(train_loader_F)):
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/tqdm/std.py", line 1182, in __iter__
+    for obj in iterable:
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 634, in __next__
+    data = self._next_data()
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 1329, in _next_data
+    idx, data = self._get_data()
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 1285, in _get_data
+    success, data = self._try_get_data()
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/torch/utils/data/dataloader.py", line 1133, in _try_get_data
+    data = self._data_queue.get(timeout=timeout)
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/queue.py", line 179, in get
+    self.not_empty.wait(remaining)
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/threading.py", line 306, in wait
+    gotit = waiter.acquire(True, timeout)
+KeyboardInterrupt
+100%|██████████| 1/1 [00:01<00:00,  1.02s/it]100%|██████████| 1/1 [00:01<00:00,  1.11s/it]
+LR: 0.000713, Acc: 0.9688 (155.0/160), Loss: 2.9609
+**** Tip-Adapter-F's test accuracy: 82.73. ****
+
+Train Epoch: 36 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]100%|██████████| 1/1 [00:00<00:00,  1.03it/s]100%|██████████| 1/1 [00:01<00:00,  1.04s/it]
+LR: 0.000699, Acc: 0.9812 (157.0/160), Loss: 2.9531
+**** Tip-Adapter-F's test accuracy: 82.44. ****
+
+Train Epoch: 37 / 100
+  0%|          | 0/1 [00:00<?, ?it/s]  0%|          | 0/1 [00:00<?, ?it/s]
+Traceback (most recent call last):
+  File "main.py", line 330, in <module>
+    main()
+  File "main.py", line 315, in main
+    best_acc = run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights, clip_model, train_loader_F, dataset.template)
+  File "main.py", line 182, in run_tip_adapter_F
+    text_features = clip_model.encode_text(text)
+  File "/home/jingchen/tip-adapter/clip/model.py", line 350, in encode_text
+    x = x[torch.arange(x.shape[0]), text.argmax(dim=-1)] @ self.text_projection
+KeyboardInterrupt
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [50, 50], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 10, 'dataset': 'oxford_flowers', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/oxford_flowers'} 
+
+Seed= 0
+Preparing dataset.
+Reading split from data/oxford_flowers/split_zhou_OxfordFlowers.json
+Creating a 16-shot dataset
+
+Getting textual features as CLIP's classifier.
+
+Constructing cache model by few-shot visual features and labels.
+cache_values: torch.Size([1632, 102])
+cache_keys: torch.Size([512, 1632])
+
+Loading visual features and labels from val set.
+
+Loading visual features and labels from test set.
+Train Epoch: 0 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:03<00:18,  3.01s/it] 29%|██▊       | 2/7 [00:03<00:07,  1.41s/it] 43%|████▎     | 3/7 [00:03<00:03,  1.12it/s] 57%|█████▋    | 4/7 [00:03<00:01,  1.55it/s] 71%|███████▏  | 5/7 [00:04<00:01,  1.96it/s] 86%|████████▌ | 6/7 [00:04<00:00,  2.33it/s]100%|██████████| 7/7 [00:04<00:00,  3.04it/s]100%|██████████| 7/7 [00:04<00:00,  1.52it/s]
+LR: 0.000994, Acc: 0.0729 (119.0/1632), Loss: 4.7307
+**** Tip-Adapter-F's test accuracy: 22.45. ****
+
+Train Epoch: 1 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:02<00:12,  2.07s/it] 29%|██▊       | 2/7 [00:02<00:05,  1.01s/it] 43%|████▎     | 3/7 [00:02<00:02,  1.48it/s] 57%|█████▋    | 4/7 [00:02<00:01,  1.94it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.34it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.67it/s]100%|██████████| 7/7 [00:03<00:00,  3.48it/s]100%|██████████| 7/7 [00:03<00:00,  1.94it/s]
+LR: 0.000976, Acc: 0.4167 (680.0/1632), Loss: 2.8943
+**** Tip-Adapter-F's test accuracy: 59.20. ****
+
+Train Epoch: 2 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:02<00:12,  2.10s/it] 29%|██▊       | 2/7 [00:02<00:05,  1.04s/it] 43%|████▎     | 3/7 [00:02<00:02,  1.43it/s] 57%|█████▋    | 4/7 [00:02<00:01,  1.85it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.15it/s]
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [13, 13], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 2, 'dataset': 'dtd', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/dtd'} 
+
+Seed= 0
+Preparing dataset.
+Reading split from data/dtd/split_zhou_DescribableTextures.json
+Creating a 16-shot dataset
+
+Getting textual features as CLIP's classifier.
+
+Constructing cache model by few-shot visual features and labels.
+cache_values: torch.Size([752, 47])
+cache_keys: torch.Size([512, 752])
+
+Loading visual features and labels from val set.
+
+Loading visual features and labels from test set.
+Train Epoch: 0 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.42it/s]100%|██████████| 7/7 [00:03<00:00,  3.19it/s]100%|██████████| 7/7 [00:03<00:00,  1.82it/s]
+LR: 0.000946, Acc: 0.7096 (1158.0/1632), Loss: 2.0392
+**** Tip-Adapter-F's test accuracy: 78.40. ****
+
+Train Epoch: 3 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:02<00:12,  2.11s/it] 29%|██▊       | 2/7 [00:02<00:05,  1.05s/it] 43%|████▎     | 3/7 [00:02<00:02,  1.39it/s] 57%|█████▋    | 4/7 [00:03<00:01,  1.80it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.16it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.01it/s] 33%|███▎      | 1/3 [00:04<00:08,  4.20s/it]100%|██████████| 7/7 [00:04<00:00,  2.50it/s]100%|██████████| 7/7 [00:04<00:00,  1.67it/s]
+LR: 0.000905, Acc: 0.8548 (1395.0/1632), Loss: 1.6803
+**** Tip-Adapter-F's test accuracy: 85.71. ****
+
+Train Epoch: 4 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 67%|██████▋   | 2/3 [00:04<00:01,  1.94s/it]100%|██████████| 3/3 [00:04<00:00,  1.17s/it]100%|██████████| 3/3 [00:04<00:00,  1.63s/it]
+LR: 0.000994, Acc: 0.0585 (44.0/752), Loss: 5.4987
+**** Tip-Adapter-F's test accuracy: 19.80. ****
+
+Train Epoch: 1 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:02<00:12,  2.15s/it] 33%|███▎      | 1/3 [00:02<00:04,  2.20s/it] 29%|██▊       | 2/7 [00:02<00:05,  1.18s/it] 67%|██████▋   | 2/3 [00:02<00:01,  1.23s/it] 43%|████▎     | 3/7 [00:03<00:03,  1.13it/s]100%|██████████| 3/3 [00:03<00:00,  1.12it/s] 57%|█████▋    | 4/7 [00:03<00:02,  1.36it/s]100%|██████████| 3/3 [00:03<00:00,  1.10s/it]
+LR: 0.000976, Acc: 0.2314 (174.0/752), Loss: 5.2891
+**** Tip-Adapter-F's test accuracy: 23.11. ****
+
+Train Epoch: 2 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 71%|███████▏  | 5/7 [00:03<00:01,  1.76it/s] 86%|████████▌ | 6/7 [00:04<00:00,  2.12it/s]100%|██████████| 7/7 [00:04<00:00,  2.83it/s]100%|██████████| 7/7 [00:04<00:00,  1.57it/s]
+LR: 0.000854, Acc: 0.9056 (1478.0/1632), Loss: 1.5243
+**** Tip-Adapter-F's test accuracy: 89.48. ****
+
+Train Epoch: 5 / 100
+  0%|          | 0/7 [00:00<?, ?it/s]
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [10, 10], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 1.17, 'dataset': 'food101', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/food101'} 
+
+Seed= 0
+Preparing dataset.
+Reading split from data/food-101/split_zhou_Food101.json
+Creating a 16-shot dataset
+
+Getting textual features as CLIP's classifier.
+
+Constructing cache model by few-shot visual features and labels.
+cache_values: torch.Size([1616, 101])
+cache_keys: torch.Size([512, 1616])
+
+Loading visual features and labels from val set.
+
+Loading visual features and labels from test set.
+Train Epoch: 0 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 33%|███▎      | 1/3 [00:02<00:04,  2.01s/it] 67%|██████▋   | 2/3 [00:02<00:00,  1.01it/s]100%|██████████| 3/3 [00:02<00:00,  1.53it/s]100%|██████████| 3/3 [00:02<00:00,  1.14it/s]
+LR: 0.000946, Acc: 0.2779 (209.0/752), Loss: 4.6159
+**** Tip-Adapter-F's test accuracy: 36.11. ****
+
+Train Epoch: 3 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:02<00:13,  2.21s/it] 29%|██▊       | 2/7 [00:02<00:05,  1.07s/it] 43%|████▎     | 3/7 [00:02<00:02,  1.41it/s] 57%|█████▋    | 4/7 [00:03<00:01,  1.87it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.27it/s] 14%|█▍        | 1/7 [00:03<00:18,  3.06s/it] 86%|████████▌ | 6/7 [00:03<00:00,  2.28it/s] 29%|██▊       | 2/7 [00:03<00:07,  1.43s/it]100%|██████████| 7/7 [00:03<00:00,  2.71it/s] 33%|███▎      | 1/3 [00:02<00:04,  2.09s/it] 43%|████▎     | 3/7 [00:03<00:03,  1.11it/s]100%|██████████| 7/7 [00:04<00:00,  1.73it/s]
+LR: 0.000794, Acc: 0.9485 (1548.0/1632), Loss: 1.4307
+**** Tip-Adapter-F's test accuracy: 90.99. ****
+
+Train Epoch: 6 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 67%|██████▋   | 2/3 [00:02<00:01,  1.02s/it] 57%|█████▋    | 4/7 [00:03<00:01,  1.53it/s]100%|██████████| 3/3 [00:02<00:00,  1.49it/s]100%|██████████| 3/3 [00:02<00:00,  1.11it/s]
+LR: 0.000905, Acc: 0.4455 (335.0/752), Loss: 3.8685
+**** Tip-Adapter-F's test accuracy: 47.81. ****
+
+Train Epoch: 4 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 71%|███████▏  | 5/7 [00:04<00:01,  1.93it/s] 86%|████████▌ | 6/7 [00:04<00:00,  2.30it/s]100%|██████████| 7/7 [00:04<00:00,  1.52it/s]
+LR: 0.000994, Acc: 0.0990 (160.0/1616), Loss: 4.8142
+**** Tip-Adapter-F's test accuracy: 27.92. ****
+
+Train Epoch: 1 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:02<00:12,  2.14s/it] 29%|██▊       | 2/7 [00:02<00:05,  1.16s/it] 33%|███▎      | 1/3 [00:02<00:04,  2.22s/it] 14%|█▍        | 1/7 [00:01<00:11,  1.86s/it] 29%|██▊       | 2/7 [00:02<00:04,  1.08it/s] 43%|████▎     | 3/7 [00:03<00:03,  1.14it/s] 67%|██████▋   | 2/3 [00:02<00:01,  1.22s/it] 43%|████▎     | 3/7 [00:02<00:02,  1.59it/s] 57%|█████▋    | 4/7 [00:02<00:01,  2.05it/s] 57%|█████▋    | 4/7 [00:03<00:02,  1.35it/s]100%|██████████| 3/3 [00:03<00:00,  1.13it/s]100%|██████████| 3/3 [00:03<00:00,  1.10s/it]
+LR: 0.000854, Acc: 0.5718 (430.0/752), Loss: 3.3919
+**** Tip-Adapter-F's test accuracy: 55.91. ****
+
+Train Epoch: 5 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 71%|███████▏  | 5/7 [00:02<00:00,  2.43it/s] 71%|███████▏  | 5/7 [00:03<00:01,  1.73it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.75it/s] 86%|████████▌ | 6/7 [00:04<00:00,  2.10it/s]100%|██████████| 7/7 [00:03<00:00,  2.07it/s]
+LR: 0.000976, Acc: 0.4103 (663.0/1616), Loss: 2.8426
+**** Tip-Adapter-F's test accuracy: 58.23. ****
+
+Train Epoch: 2 / 100
+  0%|          | 0/7 [00:00<?, ?it/s]100%|██████████| 7/7 [00:04<00:00,  2.82it/s]100%|██████████| 7/7 [00:04<00:00,  1.57it/s]
+LR: 0.000727, Acc: 0.9663 (1577.0/1632), Loss: 1.3843
+**** Tip-Adapter-F's test accuracy: 92.45. ****
+
+Train Epoch: 7 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 33%|███▎      | 1/3 [00:02<00:04,  2.19s/it] 67%|██████▋   | 2/3 [00:02<00:01,  1.06s/it] 14%|█▍        | 1/7 [00:02<00:12,  2.01s/it]100%|██████████| 3/3 [00:02<00:00,  1.45it/s]100%|██████████| 3/3 [00:02<00:00,  1.07it/s]
+LR: 0.000794, Acc: 0.6769 (509.0/752), Loss: 3.0560
+**** Tip-Adapter-F's test accuracy: 59.75. ****
+
+Train Epoch: 6 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 29%|██▊       | 2/7 [00:02<00:04,  1.01it/s] 14%|█▍        | 1/7 [00:02<00:14,  2.36s/it] 43%|████▎     | 3/7 [00:02<00:02,  1.49it/s] 29%|██▊       | 2/7 [00:02<00:05,  1.13s/it] 57%|█████▋    | 4/7 [00:02<00:01,  1.92it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.35it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.32it/s] 57%|█████▋    | 4/7 [00:03<00:01,  1.79it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.65it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.20it/s]
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [12, 5], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 3, 'dataset': 'caltech101', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/caltech101'} 
+
+Seed= 0
+Preparing dataset.
+Reading split from data/caltech-101/split_zhou_Caltech101.json
+Creating a 16-shot dataset
+
+Getting textual features as CLIP's classifier.
+
+Constructing cache model by few-shot visual features and labels.
+cache_values: torch.Size([1600, 100])
+cache_keys: torch.Size([512, 1600])
+
+Loading visual features and labels from val set.
+
+Loading visual features and labels from test set.
+Train Epoch: 0 / 100
+  0%|          | 0/7 [00:00<?, ?it/s]100%|██████████| 7/7 [00:03<00:00,  1.96it/s]
+LR: 0.000946, Acc: 0.6739 (1089.0/1616), Loss: 2.0843
+**** Tip-Adapter-F's test accuracy: 69.47. ****
+
+Train Epoch: 3 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.54it/s]100%|██████████| 7/7 [00:03<00:00,  3.19it/s]100%|██████████| 7/7 [00:03<00:00,  1.75it/s]
+LR: 0.000655, Acc: 0.9737 (1589.0/1632), Loss: 1.3103
+**** Tip-Adapter-F's test accuracy: 92.04. ****
+
+Train Epoch: 8 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 33%|███▎      | 1/3 [00:01<00:03,  1.93s/it] 67%|██████▋   | 2/3 [00:02<00:00,  1.04it/s]100%|██████████| 3/3 [00:02<00:00,  1.56it/s]100%|██████████| 3/3 [00:02<00:00,  1.15it/s]
+LR: 0.000727, Acc: 0.7274 (547.0/752), Loss: 2.8835
+**** Tip-Adapter-F's test accuracy: 62.35. ****
+
+Train Epoch: 7 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:02<00:13,  2.21s/it] 29%|██▊       | 2/7 [00:02<00:05,  1.07s/it] 14%|█▍        | 1/7 [00:02<00:13,  2.17s/it] 43%|████▎     | 3/7 [00:02<00:02,  1.42it/s] 29%|██▊       | 2/7 [00:02<00:05,  1.06s/it] 57%|█████▋    | 4/7 [00:03<00:01,  1.87it/s] 14%|█▍        | 1/7 [00:03<00:18,  3.11s/it] 71%|███████▏  | 5/7 [00:03<00:00,  2.23it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.34it/s] 29%|██▊       | 2/7 [00:03<00:07,  1.44s/it] 86%|████████▌ | 6/7 [00:03<00:00,  2.57it/s] 43%|████▎     | 3/7 [00:03<00:03,  1.10it/s] 33%|███▎      | 1/3 [00:02<00:04,  2.39s/it]100%|██████████| 7/7 [00:03<00:00,  1.86it/s]
+LR: 0.000905, Acc: 0.7735 (1250.0/1616), Loss: 1.8285
+**** Tip-Adapter-F's test accuracy: 73.07. ****
+
+Train Epoch: 4 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 57%|█████▋    | 4/7 [00:03<00:01,  1.51it/s] 57%|█████▋    | 4/7 [00:03<00:01,  1.53it/s] 71%|███████▏  | 5/7 [00:04<00:01,  1.91it/s] 67%|██████▋   | 2/3 [00:02<00:01,  1.29s/it] 71%|███████▏  | 5/7 [00:03<00:01,  1.62it/s] 86%|████████▌ | 6/7 [00:04<00:00,  2.28it/s]100%|██████████| 7/7 [00:04<00:00,  1.50it/s]
+LR: 0.000994, Acc: 0.0756 (121.0/1600), Loss: 4.7235
+**** Tip-Adapter-F's test accuracy: 22.92. ****
+
+Train Epoch: 1 / 100
+  0%|          | 0/7 [00:00<?, ?it/s]100%|██████████| 3/3 [00:03<00:00,  1.08it/s]100%|██████████| 3/3 [00:03<00:00,  1.16s/it]
+LR: 0.000655, Acc: 0.7899 (594.0/752), Loss: 2.6986
+**** Tip-Adapter-F's test accuracy: 62.94. ****
+
+Train Epoch: 8 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 86%|████████▌ | 6/7 [00:04<00:00,  1.82it/s]100%|██████████| 7/7 [00:04<00:00,  2.46it/s]100%|██████████| 7/7 [00:04<00:00,  1.54it/s]
+LR: 0.000578, Acc: 0.9841 (1606.0/1632), Loss: 1.2577
+**** Tip-Adapter-F's test accuracy: 93.42. ****
+
+Train Epoch: 9 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:02<00:12,  2.01s/it] 29%|██▊       | 2/7 [00:02<00:04,  1.00it/s] 14%|█▍        | 1/7 [00:01<00:09,  1.55s/it] 43%|████▎     | 3/7 [00:02<00:02,  1.50it/s] 29%|██▊       | 2/7 [00:01<00:03,  1.26it/s] 57%|█████▋    | 4/7 [00:02<00:01,  1.96it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.80it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.35it/s] 33%|███▎      | 1/3 [00:02<00:04,  2.19s/it] 57%|█████▋    | 4/7 [00:02<00:01,  2.25it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.68it/s] 71%|███████▏  | 5/7 [00:02<00:00,  2.59it/s]100%|██████████| 7/7 [00:03<00:00,  1.98it/s]
+LR: 0.000854, Acc: 0.8199 (1325.0/1616), Loss: 1.6244
+**** Tip-Adapter-F's test accuracy: 75.58. ****
+
+Train Epoch: 5 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 86%|████████▌ | 6/7 [00:02<00:00,  2.86it/s] 67%|██████▋   | 2/3 [00:02<00:01,  1.24s/it] 14%|█▍        | 1/7 [00:02<00:14,  2.50s/it]100%|██████████| 7/7 [00:03<00:00,  2.27it/s]
+LR: 0.000976, Acc: 0.5350 (856.0/1600), Loss: 2.5103
+**** Tip-Adapter-F's test accuracy: 78.50. ****
+
+Train Epoch: 2 / 100
+  0%|          | 0/7 [00:00<?, ?it/s]100%|██████████| 3/3 [00:03<00:00,  1.11it/s] 29%|██▊       | 2/7 [00:03<00:06,  1.34s/it]100%|██████████| 3/3 [00:03<00:00,  1.12s/it]
+LR: 0.000578, Acc: 0.8059 (606.0/752), Loss: 2.5911
+**** Tip-Adapter-F's test accuracy: 64.54. ****
+
+Train Epoch: 9 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 43%|████▎     | 3/7 [00:03<00:03,  1.17it/s] 57%|█████▋    | 4/7 [00:03<00:01,  1.59it/s] 71%|███████▏  | 5/7 [00:03<00:01,  1.97it/s] 14%|█▍        | 1/7 [00:01<00:08,  1.49s/it] 86%|████████▌ | 6/7 [00:04<00:00,  2.33it/s] 14%|█▍        | 1/7 [00:01<00:11,  1.98s/it]100%|██████████| 7/7 [00:04<00:00,  3.09it/s]100%|██████████| 7/7 [00:04<00:00,  1.61it/s]
+LR: 0.000500, Acc: 0.9828 (1604.0/1632), Loss: 1.2280
+**** Tip-Adapter-F's test accuracy: 93.18. ****
+
+Train Epoch: 10 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 29%|██▊       | 2/7 [00:01<00:03,  1.30it/s] 29%|██▊       | 2/7 [00:02<00:04,  1.02it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.85it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.53it/s] 57%|█████▋    | 4/7 [00:02<00:01,  2.30it/s] 57%|█████▋    | 4/7 [00:02<00:01,  1.98it/s] 33%|███▎      | 1/3 [00:02<00:04,  2.02s/it] 71%|███████▏  | 5/7 [00:02<00:00,  2.67it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.37it/s] 67%|██████▋   | 2/3 [00:02<00:00,  1.01it/s] 86%|████████▌ | 6/7 [00:02<00:00,  2.90it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.70it/s]100%|██████████| 3/3 [00:02<00:00,  1.51it/s]100%|██████████| 7/7 [00:03<00:00,  2.32it/s]
+LR: 0.000946, Acc: 0.8319 (1331.0/1600), Loss: 1.6516
+**** Tip-Adapter-F's test accuracy: 89.98. ****
+
+Train Epoch: 3 / 100
+  0%|          | 0/7 [00:00<?, ?it/s]100%|██████████| 3/3 [00:02<00:00,  1.13it/s]100%|██████████| 7/7 [00:03<00:00,  1.98it/s]
+LR: 0.000500, Acc: 0.8391 (631.0/752), Loss: 2.4987
+**** Tip-Adapter-F's test accuracy: 66.67. ****
+
+Train Epoch: 10 / 100
+  0%|          | 0/3 [00:00<?, ?it/s]
+LR: 0.000794, Acc: 0.8577 (1386.0/1616), Loss: 1.5551
+**** Tip-Adapter-F's test accuracy: 75.70. ****
+
+Train Epoch: 6 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:02<00:14,  2.37s/it] 29%|██▊       | 2/7 [00:02<00:05,  1.14s/it] 14%|█▍        | 1/7 [00:01<00:09,  1.58s/it] 43%|████▎     | 3/7 [00:02<00:03,  1.33it/s] 29%|██▊       | 2/7 [00:01<00:04,  1.24it/s] 57%|█████▋    | 4/7 [00:03<00:01,  1.77it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.78it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.17it/s] 14%|█▍        | 1/7 [00:02<00:13,  2.21s/it] 57%|█████▋    | 4/7 [00:02<00:01,  2.24it/s] 29%|██▊       | 2/7 [00:02<00:05,  1.07s/it] 71%|███████▏  | 5/7 [00:02<00:00,  2.61it/s] 33%|███▎      | 1/3 [00:02<00:05,  2.61s/it] 86%|████████▌ | 6/7 [00:04<00:00,  2.05it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.41it/s] 86%|████████▌ | 6/7 [00:02<00:00,  2.91it/s]100%|██████████| 7/7 [00:04<00:00,  2.48it/s]100%|██████████| 7/7 [00:04<00:00,  1.61it/s]
+LR: 0.000422, Acc: 0.9853 (1608.0/1632), Loss: 1.2296
+**** Tip-Adapter-F's test accuracy: 93.14. ****
+
+Train Epoch: 11 / 100
+  0%|          | 0/7 [00:00<?, ?it/s]100%|██████████| 7/7 [00:03<00:00,  2.28it/s]
+LR: 0.000905, Acc: 0.9006 (1441.0/1600), Loss: 1.4323
+**** Tip-Adapter-F's test accuracy: 91.85. ****
+
+Train Epoch: 4 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 67%|██████▋   | 2/3 [00:02<00:01,  1.30s/it] 57%|█████▋    | 4/7 [00:03<00:01,  1.87it/s]100%|██████████| 3/3 [00:03<00:00,  1.22it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.26it/s]100%|██████████| 3/3 [00:03<00:00,  1.11s/it]
+LR: 0.000422, Acc: 0.8630 (649.0/752), Loss: 2.4271
+**** Tip-Adapter-F's test accuracy: 66.37. ****
+
+Train Epoch: 11 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.60it/s]100%|██████████| 7/7 [00:03<00:00,  1.86it/s]
+LR: 0.000727, Acc: 0.8700 (1406.0/1616), Loss: 1.4730
+**** Tip-Adapter-F's test accuracy: 76.44. ****
+
+Train Epoch: 7 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:01<00:08,  1.50s/it] 29%|██▊       | 2/7 [00:01<00:03,  1.29it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.84it/s] 57%|█████▋    | 4/7 [00:02<00:01,  2.26it/s] 14%|█▍        | 1/7 [00:02<00:15,  2.59s/it] 71%|███████▏  | 5/7 [00:02<00:00,  2.63it/s] 14%|█▍        | 1/7 [00:02<00:12,  2.02s/it] 86%|████████▌ | 6/7 [00:02<00:00,  2.92it/s] 33%|███▎      | 1/3 [00:02<00:05,  2.56s/it]100%|██████████| 7/7 [00:03<00:00,  2.32it/s]
+LR: 0.000854, Acc: 0.9387 (1502.0/1600), Loss: 1.3310
+**** Tip-Adapter-F's test accuracy: 92.66. ****
+
+Train Epoch: 5 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 29%|██▊       | 2/7 [00:03<00:06,  1.38s/it] 29%|██▊       | 2/7 [00:02<00:05,  1.01s/it] 43%|████▎     | 3/7 [00:02<00:02,  1.49it/s] 67%|██████▋   | 2/3 [00:03<00:01,  1.36s/it] 43%|████▎     | 3/7 [00:03<00:03,  1.00it/s] 57%|█████▋    | 4/7 [00:02<00:01,  1.94it/s]100%|██████████| 3/3 [00:03<00:00,  1.04it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.34it/s]100%|██████████| 3/3 [00:03<00:00,  1.22s/it]
+LR: 0.000345, Acc: 0.8763 (659.0/752), Loss: 2.3971
+**** Tip-Adapter-F's test accuracy: 67.26. ****
+
+Train Epoch: 12 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 57%|█████▋    | 4/7 [00:04<00:02,  1.30it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.66it/s]100%|██████████| 7/7 [00:03<00:00,  3.49it/s] 71%|███████▏  | 5/7 [00:04<00:01,  1.69it/s] 14%|█▍        | 1/7 [00:01<00:08,  1.34s/it]100%|██████████| 7/7 [00:03<00:00,  1.96it/s]
+LR: 0.000655, Acc: 0.8843 (1429.0/1616), Loss: 1.4362
+**** Tip-Adapter-F's test accuracy: 76.95. ****
+
+Train Epoch: 8 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 86%|████████▌ | 6/7 [00:04<00:00,  2.05it/s] 29%|██▊       | 2/7 [00:01<00:03,  1.41it/s]100%|██████████| 7/7 [00:04<00:00,  2.74it/s]100%|██████████| 7/7 [00:04<00:00,  1.43it/s]
+LR: 0.000345, Acc: 0.9853 (1608.0/1632), Loss: 1.2273
+**** Tip-Adapter-F's test accuracy: 93.42. ****
+
+Train Epoch: 12 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 43%|████▎     | 3/7 [00:01<00:02,  1.96it/s] 57%|█████▋    | 4/7 [00:02<00:01,  2.40it/s] 71%|███████▏  | 5/7 [00:02<00:00,  2.75it/s] 86%|████████▌ | 6/7 [00:02<00:00,  2.98it/s]100%|██████████| 7/7 [00:02<00:00,  2.42it/s]
+LR: 0.000794, Acc: 0.9437 (1510.0/1600), Loss: 1.2879
+**** Tip-Adapter-F's test accuracy: 92.70. ****
+
+Train Epoch: 6 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 33%|███▎      | 1/3 [00:02<00:04,  2.01s/it] 67%|██████▋   | 2/3 [00:02<00:00,  1.01it/s] 14%|█▍        | 1/7 [00:01<00:11,  1.97s/it]100%|██████████| 3/3 [00:02<00:00,  1.52it/s] 29%|██▊       | 2/7 [00:02<00:04,  1.02it/s]100%|██████████| 3/3 [00:02<00:00,  1.13it/s]
+LR: 0.000273, Acc: 0.8989 (676.0/752), Loss: 2.3268
+**** Tip-Adapter-F's test accuracy: 67.02. ****
+
+Train Epoch: 13 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.52it/s] 57%|█████▋    | 4/7 [00:02<00:01,  1.97it/s] 14%|█▍        | 1/7 [00:02<00:14,  2.37s/it] 14%|█▍        | 1/7 [00:01<00:08,  1.39s/it] 71%|███████▏  | 5/7 [00:03<00:00,  2.36it/s] 29%|██▊       | 2/7 [00:02<00:05,  1.14s/it] 29%|██▊       | 2/7 [00:01<00:03,  1.37it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.69it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.34it/s] 43%|████▎     | 3/7 [00:01<00:02,  1.92it/s]100%|██████████| 7/7 [00:03<00:00,  1.99it/s]
+LR: 0.000578, Acc: 0.9066 (1465.0/1616), Loss: 1.4025
+**** Tip-Adapter-F's test accuracy: 76.89. ****
+
+Train Epoch: 9 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 57%|█████▋    | 4/7 [00:03<00:01,  1.79it/s] 57%|█████▋    | 4/7 [00:02<00:01,  2.37it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.16it/s] 71%|███████▏  | 5/7 [00:02<00:00,  2.72it/s] 86%|████████▌ | 6/7 [00:02<00:00,  2.99it/s] 33%|███▎      | 1/3 [00:02<00:04,  2.18s/it]100%|██████████| 7/7 [00:02<00:00,  2.40it/s]
+LR: 0.000727, Acc: 0.9550 (1528.0/1600), Loss: 1.2759
+**** Tip-Adapter-F's test accuracy: 93.31. ****
+
+Train Epoch: 7 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 86%|████████▌ | 6/7 [00:04<00:00,  2.04it/s]100%|██████████| 7/7 [00:04<00:00,  2.47it/s] 67%|██████▋   | 2/3 [00:02<00:01,  1.14s/it]100%|██████████| 7/7 [00:04<00:00,  1.59it/s]
+LR: 0.000273, Acc: 0.9859 (1609.0/1632), Loss: 1.2344
+**** Tip-Adapter-F's test accuracy: 93.99. ****
+
+Train Epoch: 13 / 100
+  0%|          | 0/7 [00:00<?, ?it/s]100%|██████████| 3/3 [00:02<00:00,  1.36it/s]100%|██████████| 3/3 [00:02<00:00,  1.02it/s]
+LR: 0.000206, Acc: 0.9122 (686.0/752), Loss: 2.2799
+**** Tip-Adapter-F's test accuracy: 67.14. ****
+
+Train Epoch: 14 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:01<00:10,  1.80s/it] 29%|██▊       | 2/7 [00:02<00:04,  1.10it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.61it/s] 14%|█▍        | 1/7 [00:01<00:09,  1.65s/it] 57%|█████▋    | 4/7 [00:02<00:01,  2.07it/s] 29%|██▊       | 2/7 [00:01<00:04,  1.19it/s] 71%|███████▏  | 5/7 [00:02<00:00,  2.45it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.72it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.70it/s]100%|██████████| 7/7 [00:03<00:00,  2.07it/s]
+LR: 0.000500, Acc: 0.9109 (1472.0/1616), Loss: 1.3621
+**** Tip-Adapter-F's test accuracy: 77.34. ****
+
+Train Epoch: 10 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 57%|█████▋    | 4/7 [00:02<00:01,  2.18it/s] 14%|█▍        | 1/7 [00:02<00:13,  2.24s/it] 71%|███████▏  | 5/7 [00:02<00:00,  2.56it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.86it/s] 33%|███▎      | 1/3 [00:02<00:04,  2.37s/it]100%|██████████| 7/7 [00:03<00:00,  2.21it/s]
+LR: 0.000655, Acc: 0.9594 (1535.0/1600), Loss: 1.2134
+**** Tip-Adapter-F's test accuracy: 93.55. ****
+
+Train Epoch: 8 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 29%|██▊       | 2/7 [00:02<00:06,  1.24s/it] 67%|██████▋   | 2/3 [00:02<00:01,  1.29s/it] 43%|████▎     | 3/7 [00:03<00:03,  1.08it/s]100%|██████████| 3/3 [00:03<00:00,  1.08it/s]100%|██████████| 3/3 [00:03<00:00,  1.16s/it]
+LR: 0.000146, Acc: 0.8963 (674.0/752), Loss: 2.2546
+**** Tip-Adapter-F's test accuracy: 67.55. ****
+
+Train Epoch: 15 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 57%|█████▋    | 4/7 [00:03<00:02,  1.34it/s] 71%|███████▏  | 5/7 [00:04<00:01,  1.73it/s] 14%|█▍        | 1/7 [00:02<00:12,  2.08s/it] 14%|█▍        | 1/7 [00:01<00:08,  1.39s/it] 86%|████████▌ | 6/7 [00:04<00:00,  2.10it/s] 29%|██▊       | 2/7 [00:02<00:05,  1.02s/it] 29%|██▊       | 2/7 [00:01<00:03,  1.37it/s]100%|██████████| 7/7 [00:04<00:00,  2.81it/s]100%|██████████| 7/7 [00:04<00:00,  1.53it/s]
+LR: 0.000206, Acc: 0.9896 (1615.0/1632), Loss: 1.2116
+**** Tip-Adapter-F's test accuracy: 93.95. ****
+
+Train Epoch: 14 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.47it/s] 43%|████▎     | 3/7 [00:01<00:02,  1.92it/s] 57%|█████▋    | 4/7 [00:02<00:01,  1.93it/s] 57%|█████▋    | 4/7 [00:02<00:01,  2.33it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.32it/s] 71%|███████▏  | 5/7 [00:02<00:00,  2.68it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.65it/s] 86%|████████▌ | 6/7 [00:02<00:00,  2.96it/s]100%|██████████| 7/7 [00:03<00:00,  1.92it/s]
+LR: 0.000422, Acc: 0.9226 (1491.0/1616), Loss: 1.3149
+**** Tip-Adapter-F's test accuracy: 77.52. ****
+
+Train Epoch: 11 / 100
+  0%|          | 0/7 [00:00<?, ?it/s]100%|██████████| 7/7 [00:02<00:00,  2.39it/s] 33%|███▎      | 1/3 [00:01<00:03,  1.89s/it]
+LR: 0.000578, Acc: 0.9725 (1556.0/1600), Loss: 1.2008
+**** Tip-Adapter-F's test accuracy: 94.08. ****
+
+Train Epoch: 9 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 67%|██████▋   | 2/3 [00:02<00:00,  1.06it/s]100%|██████████| 3/3 [00:02<00:00,  1.60it/s]100%|██████████| 3/3 [00:02<00:00,  1.16it/s]
+LR: 0.000095, Acc: 0.9149 (688.0/752), Loss: 2.2487
+**** Tip-Adapter-F's test accuracy: 67.97. ****
+
+Train Epoch: 16 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:02<00:15,  2.54s/it] 14%|█▍        | 1/7 [00:01<00:09,  1.63s/it] 29%|██▊       | 2/7 [00:02<00:06,  1.21s/it] 29%|██▊       | 2/7 [00:01<00:04,  1.19it/s] 43%|████▎     | 3/7 [00:03<00:03,  1.28it/s] 14%|█▍        | 1/7 [00:02<00:13,  2.19s/it] 43%|████▎     | 3/7 [00:02<00:02,  1.72it/s] 57%|█████▋    | 4/7 [00:03<00:01,  1.71it/s] 29%|██▊       | 2/7 [00:02<00:05,  1.06s/it] 57%|█████▋    | 4/7 [00:02<00:01,  2.18it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.11it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.42it/s] 71%|███████▏  | 5/7 [00:02<00:00,  2.54it/s] 57%|█████▋    | 4/7 [00:03<00:01,  1.88it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.84it/s] 33%|███▎      | 1/3 [00:02<00:04,  2.32s/it] 86%|████████▌ | 6/7 [00:04<00:00,  2.02it/s]100%|██████████| 7/7 [00:03<00:00,  2.22it/s]
+LR: 0.000500, Acc: 0.9756 (1561.0/1600), Loss: 1.1820
+**** Tip-Adapter-F's test accuracy: 94.12. ****
+
+Train Epoch: 10 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.27it/s]100%|██████████| 7/7 [00:04<00:00,  2.44it/s]100%|██████████| 7/7 [00:04<00:00,  1.55it/s]
+LR: 0.000146, Acc: 0.9902 (1616.0/1632), Loss: 1.2140
+**** Tip-Adapter-F's test accuracy: 93.95. ****
+
+Train Epoch: 15 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 67%|██████▋   | 2/3 [00:02<00:01,  1.19s/it] 86%|████████▌ | 6/7 [00:03<00:00,  2.61it/s]100%|██████████| 3/3 [00:02<00:00,  1.31it/s]100%|██████████| 7/7 [00:03<00:00,  1.88it/s]
+LR: 0.000345, Acc: 0.9214 (1489.0/1616), Loss: 1.3725
+**** Tip-Adapter-F's test accuracy: 77.84. ****
+
+Train Epoch: 12 / 100
+  0%|          | 0/7 [00:00<?, ?it/s]100%|██████████| 3/3 [00:03<00:00,  1.02s/it]
+LR: 0.000054, Acc: 0.9122 (686.0/752), Loss: 2.2064
+**** Tip-Adapter-F's test accuracy: 67.73. ****
+
+Train Epoch: 17 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:01<00:08,  1.49s/it] 29%|██▊       | 2/7 [00:01<00:03,  1.28it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.81it/s] 57%|█████▋    | 4/7 [00:02<00:01,  2.24it/s] 71%|███████▏  | 5/7 [00:02<00:00,  2.61it/s] 14%|█▍        | 1/7 [00:02<00:12,  2.11s/it] 86%|████████▌ | 6/7 [00:02<00:00,  2.90it/s] 29%|██▊       | 2/7 [00:02<00:05,  1.03s/it]100%|██████████| 7/7 [00:03<00:00,  2.31it/s]
+LR: 0.000422, Acc: 0.9769 (1563.0/1600), Loss: 1.1829
+**** Tip-Adapter-F's test accuracy: 94.44. ****
+
+Train Epoch: 11 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:02<00:17,  2.94s/it] 43%|████▎     | 3/7 [00:02<00:02,  1.46it/s] 33%|███▎      | 1/3 [00:02<00:05,  2.78s/it] 57%|█████▋    | 4/7 [00:02<00:01,  1.91it/s] 29%|██▊       | 2/7 [00:03<00:07,  1.53s/it] 71%|███████▏  | 5/7 [00:03<00:00,  2.28it/s] 67%|██████▋   | 2/3 [00:03<00:01,  1.46s/it] 86%|████████▌ | 6/7 [00:03<00:00,  2.61it/s]100%|██████████| 7/7 [00:03<00:00,  1.91it/s]
+LR: 0.000273, Acc: 0.9257 (1496.0/1616), Loss: 1.2920
+**** Tip-Adapter-F's test accuracy: 77.78. ****
+
+Train Epoch: 13 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 43%|████▎     | 3/7 [00:04<00:04,  1.08s/it]100%|██████████| 3/3 [00:03<00:00,  1.01s/it] 14%|█▍        | 1/7 [00:01<00:08,  1.42s/it]100%|██████████| 3/3 [00:03<00:00,  1.29s/it]
+LR: 0.000024, Acc: 0.9149 (688.0/752), Loss: 2.2155
+**** Tip-Adapter-F's test accuracy: 67.61. ****
+
+Train Epoch: 18 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 57%|█████▋    | 4/7 [00:04<00:02,  1.28it/s] 29%|██▊       | 2/7 [00:01<00:03,  1.35it/s] 71%|███████▏  | 5/7 [00:04<00:01,  1.67it/s] 43%|████▎     | 3/7 [00:01<00:02,  1.90it/s] 86%|████████▌ | 6/7 [00:04<00:00,  2.04it/s]100%|██████████| 7/7 [00:05<00:00,  2.73it/s] 57%|█████▋    | 4/7 [00:02<00:01,  2.35it/s]100%|██████████| 7/7 [00:05<00:00,  1.36it/s]
+LR: 0.000095, Acc: 0.9902 (1616.0/1632), Loss: 1.2012
+**** Tip-Adapter-F's test accuracy: 94.28. ****
+
+Train Epoch: 16 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 71%|███████▏  | 5/7 [00:02<00:00,  2.64it/s] 86%|████████▌ | 6/7 [00:02<00:00,  2.92it/s]100%|██████████| 7/7 [00:02<00:00,  2.36it/s]
+LR: 0.000345, Acc: 0.9762 (1562.0/1600), Loss: 1.1418
+**** Tip-Adapter-F's test accuracy: 94.40. ****
+
+Train Epoch: 12 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:01<00:10,  1.81s/it] 29%|██▊       | 2/7 [00:02<00:04,  1.10it/s] 33%|███▎      | 1/3 [00:01<00:03,  1.97s/it] 43%|████▎     | 3/7 [00:02<00:02,  1.60it/s] 67%|██████▋   | 2/3 [00:02<00:00,  1.02it/s] 57%|█████▋    | 4/7 [00:02<00:01,  2.05it/s]100%|██████████| 3/3 [00:02<00:00,  1.54it/s]100%|██████████| 3/3 [00:02<00:00,  1.15it/s]
+LR: 0.000006, Acc: 0.9082 (683.0/752), Loss: 2.1921
+**** Tip-Adapter-F's test accuracy: 67.61. ****
+
+Train Epoch: 19 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 71%|███████▏  | 5/7 [00:02<00:00,  2.43it/s] 14%|█▍        | 1/7 [00:01<00:08,  1.40s/it] 86%|████████▌ | 6/7 [00:03<00:00,  2.68it/s] 14%|█▍        | 1/7 [00:02<00:12,  2.16s/it]100%|██████████| 7/7 [00:03<00:00,  2.06it/s]
+LR: 0.000206, Acc: 0.9338 (1509.0/1616), Loss: 1.3027
+**** Tip-Adapter-F's test accuracy: 77.76. ****
+
+Train Epoch: 14 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 29%|██▊       | 2/7 [00:01<00:03,  1.33it/s] 29%|██▊       | 2/7 [00:02<00:05,  1.05s/it] 43%|████▎     | 3/7 [00:01<00:02,  1.88it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.41it/s] 57%|█████▋    | 4/7 [00:02<00:01,  2.33it/s] 57%|█████▋    | 4/7 [00:03<00:01,  1.86it/s] 71%|███████▏  | 5/7 [00:02<00:00,  2.69it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.25it/s] 86%|████████▌ | 6/7 [00:02<00:00,  2.96it/s]100%|██████████| 7/7 [00:02<00:00,  2.38it/s]
+LR: 0.000273, Acc: 0.9788 (1566.0/1600), Loss: 1.1493
+**** Tip-Adapter-F's test accuracy: 94.36. ****
+
+Train Epoch: 13 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.21it/s] 33%|███▎      | 1/3 [00:02<00:04,  2.23s/it]100%|██████████| 7/7 [00:03<00:00,  2.71it/s]100%|██████████| 7/7 [00:04<00:00,  1.72it/s]
+LR: 0.000054, Acc: 0.9908 (1617.0/1632), Loss: 1.1984
+**** Tip-Adapter-F's test accuracy: 94.40. ****
+
+Train Epoch: 17 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:01<00:11,  1.92s/it] 67%|██████▋   | 2/3 [00:02<00:01,  1.09s/it] 29%|██▊       | 2/7 [00:02<00:04,  1.05it/s]100%|██████████| 3/3 [00:02<00:00,  1.40it/s]100%|██████████| 3/3 [00:02<00:00,  1.04it/s]
+LR: 0.000000, Acc: 0.9162 (689.0/752), Loss: 2.2044
+**** Tip-Adapter-F's test accuracy: 67.67. ****
+
+Train Epoch: 20 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.55it/s] 14%|█▍        | 1/7 [00:01<00:08,  1.38s/it] 57%|█████▋    | 4/7 [00:02<00:01,  2.01it/s] 29%|██▊       | 2/7 [00:01<00:03,  1.38it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.39it/s] 43%|████▎     | 3/7 [00:01<00:02,  1.93it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.71it/s]100%|██████████| 7/7 [00:03<00:00,  2.02it/s]
+LR: 0.000146, Acc: 0.9282 (1500.0/1616), Loss: 1.2751
+**** Tip-Adapter-F's test accuracy: 77.93. ****
+
+Train Epoch: 15 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 57%|█████▋    | 4/7 [00:02<00:01,  2.38it/s] 71%|███████▏  | 5/7 [00:02<00:00,  2.73it/s] 86%|████████▌ | 6/7 [00:02<00:00,  2.99it/s] 14%|█▍        | 1/7 [00:02<00:13,  2.33s/it]100%|██████████| 7/7 [00:02<00:00,  2.42it/s]
+LR: 0.000206, Acc: 0.9812 (1570.0/1600), Loss: 1.1214
+**** Tip-Adapter-F's test accuracy: 94.32. ****
+
+Train Epoch: 14 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 33%|███▎      | 1/3 [00:02<00:04,  2.25s/it] 29%|██▊       | 2/7 [00:02<00:06,  1.28s/it] 67%|██████▋   | 2/3 [00:02<00:01,  1.24s/it] 14%|█▍        | 1/7 [00:01<00:10,  1.77s/it] 43%|████▎     | 3/7 [00:03<00:03,  1.06it/s] 29%|██▊       | 2/7 [00:02<00:04,  1.12it/s] 14%|█▍        | 1/7 [00:01<00:08,  1.36s/it]100%|██████████| 3/3 [00:03<00:00,  1.11it/s]100%|██████████| 3/3 [00:03<00:00,  1.12s/it]
+LR: 0.000006, Acc: 0.9215 (693.0/752), Loss: 2.2188
+**** Tip-Adapter-F's test accuracy: 67.73. ****
+
+Train Epoch: 21 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 57%|█████▋    | 4/7 [00:03<00:02,  1.33it/s] 43%|████▎     | 3/7 [00:02<00:02,  1.64it/s] 29%|██▊       | 2/7 [00:01<00:03,  1.39it/s] 71%|███████▏  | 5/7 [00:04<00:01,  1.72it/s] 57%|█████▋    | 4/7 [00:02<00:01,  2.09it/s] 43%|████▎     | 3/7 [00:01<00:02,  1.91it/s] 86%|████████▌ | 6/7 [00:04<00:00,  2.09it/s] 71%|███████▏  | 5/7 [00:02<00:00,  2.47it/s]100%|██████████| 7/7 [00:04<00:00,  2.76it/s] 57%|█████▋    | 4/7 [00:02<00:01,  2.36it/s]100%|██████████| 7/7 [00:04<00:00,  1.50it/s]
+LR: 0.000024, Acc: 0.9914 (1618.0/1632), Loss: 1.1963
+**** Tip-Adapter-F's test accuracy: 94.32. ****
+
+Train Epoch: 18 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.71it/s] 71%|███████▏  | 5/7 [00:02<00:00,  2.71it/s]100%|██████████| 7/7 [00:03<00:00,  2.09it/s]
+LR: 0.000095, Acc: 0.9412 (1521.0/1616), Loss: 1.2813
+**** Tip-Adapter-F's test accuracy: 77.99. ****
+
+Train Epoch: 16 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 86%|████████▌ | 6/7 [00:02<00:00,  2.98it/s]100%|██████████| 7/7 [00:02<00:00,  2.40it/s]
+LR: 0.000146, Acc: 0.9812 (1570.0/1600), Loss: 1.1498
+**** Tip-Adapter-F's test accuracy: 94.24. ****
+
+Train Epoch: 15 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 33%|███▎      | 1/3 [00:01<00:03,  1.97s/it] 67%|██████▋   | 2/3 [00:02<00:00,  1.02it/s]100%|██████████| 3/3 [00:02<00:00,  1.53it/s]100%|██████████| 3/3 [00:02<00:00,  1.13it/s]
+LR: 0.000024, Acc: 0.9136 (687.0/752), Loss: 2.2077
+**** Tip-Adapter-F's test accuracy: 67.79. ****
+
+Train Epoch: 22 / 100
+  0%|          | 0/3 [00:00<?, ?it/s] 14%|█▍        | 1/7 [00:01<00:09,  1.63s/it] 14%|█▍        | 1/7 [00:02<00:12,  2.14s/it] 29%|██▊       | 2/7 [00:01<00:04,  1.20it/s] 14%|█▍        | 1/7 [00:02<00:16,  2.68s/it] 29%|██▊       | 2/7 [00:02<00:05,  1.07s/it] 43%|████▎     | 3/7 [00:02<00:02,  1.74it/s] 29%|██▊       | 2/7 [00:02<00:06,  1.28s/it] 43%|████▎     | 3/7 [00:02<00:02,  1.42it/s] 57%|█████▋    | 4/7 [00:02<00:01,  2.20it/s] 43%|████▎     | 3/7 [00:03<00:03,  1.22it/s] 57%|█████▋    | 4/7 [00:03<00:01,  1.86it/s] 71%|███████▏  | 5/7 [00:02<00:00,  2.57it/s] 57%|█████▋    | 4/7 [00:03<00:01,  1.65it/s] 71%|███████▏  | 5/7 [00:03<00:00,  2.26it/s] 86%|████████▌ | 6/7 [00:02<00:00,  2.87it/s]100%|██████████| 7/7 [00:03<00:00,  2.22it/s]
+LR: 0.000095, Acc: 0.9800 (1568.0/1600), Loss: 1.1559
+**** Tip-Adapter-F's test accuracy: 94.32. ****
+
+Train Epoch: 16 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 86%|████████▌ | 6/7 [00:03<00:00,  2.59it/s]100%|██████████| 7/7 [00:03<00:00,  1.87it/s]
+LR: 0.000054, Acc: 0.9387 (1517.0/1616), Loss: 1.2670
+**** Tip-Adapter-F's test accuracy: 77.95. ****
+
+Train Epoch: 17 / 100
+  0%|          | 0/7 [00:00<?, ?it/s] 71%|███████▏  | 5/7 [00:04<00:01,  1.71it/s] 33%|███▎      | 1/3 [00:02<00:04,  2.22s/it]

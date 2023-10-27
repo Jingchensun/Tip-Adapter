@@ -192,9 +192,9 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             # print("tip_logits:", tip_logits.size())
             # print("cache_logits:", cache_logits.size())
 
-            loss = F.cross_entropy(clip_logits, groundtruth)
-            # loss2 = F.cross_entropy(clip_logits.T, groundtruth)
-            # loss = (loss1 + loss2)/2
+            loss1 = F.cross_entropy(clip_logits, groundtruth)
+            loss2 = F.cross_entropy(clip_logits.T, groundtruth)
+            loss = (loss1 + loss2)/2
 
             tip_logits = 10. * torch.exp(affinity @ clip_weights)
             # print("tip_logits:", tip_logits)
@@ -320,6 +320,7 @@ def main():
     values = list(origin_acc.values())
     mean = sum(values) / len(values)
     origin_acc["mean"] = mean
+    origin_acc["task"] = "loss=loss1+loss2"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:
