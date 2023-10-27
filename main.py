@@ -146,15 +146,10 @@ def sample_u(w_matrix, sim_matrix):
 def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights, clip_model, train_loader_F, template):
     
 
-    # clip_model = load_clip_to_cpu(cfg)
-    # clip_model.float()
-    model = Adapter(512, 4).to(clip_model.dtype)
-
-    # model = CustomCLIP(clip_model)
-    # for name, param in model.named_parameters():
-    #     if 'adapter' not in name:
-    #         param.requires_grad_(False)
-    
+    # Enable the cached keys to be learnable
+    model = nn.Linear(cache_keys.shape[0], cache_keys.shape[1], bias=False).to(clip_model.dtype).cuda()
+    model.weight = nn.Parameter(cache_keys.t())
+        
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg['lr'], eps=1e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, cfg['train_epoch'] * len(train_loader_F))
 
@@ -181,22 +176,27 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
 
                 text_features = clip_model.encode_text(text)
                 text_features /= text_features.norm(dim=-1, keepdim=True)
-            affinity =model(image_features)
+            # affinity =model(image_features)
+            affinity = model(image_features) #cache_keys torch.Size([512, 1616])
+
             clip_logits = 10. * torch.exp(affinity @ text_features.t())
             # print("clip_logits:", clip_logits)
             groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
-            # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
-            # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values # cache_values torch.Size([1616, 101])
+            
+            cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values # cache_values torch.Size([1616, 101])
             # clip_logits = 100. * image_features @ clip_weights
-            # tip_logits = clip_logits + cache_logits * alpha
+            tip_logits = clip_logits + cache_logits * alpha
             # print("tip_logits:", tip_logits.size())
             # print("cache_logits:", cache_logits.size())
 
             loss1 = F.cross_entropy(clip_logits, groundtruth)
             loss2 = F.cross_entropy(clip_logits.T, groundtruth)
-            loss = (loss1 + loss2)/2
+            loss12 = (loss1 + loss2)/2
+            loss3 = F.cross_entropy(tip_logits, target)
+            loss = loss12+loss3
 
-            tip_logits = 10. * torch.exp(affinity @ clip_weights)
+            # tip_logits = 10. * torch.exp(affinity @ clip_weights)
+            tip_logits = clip_logits + cache_logits * alpha
             # print("tip_logits:", tip_logits)
             acc = cls_acc(tip_logits, target)
             correct_samples += acc / 100 * len(tip_logits)
@@ -215,11 +215,12 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
         model.eval()
 
         affinity = model(test_features)
+        clip_logits = 10. * torch.exp(affinity @ text_features.t())
         # clip_logits = torch.exp(affinity @ text_features.t())
-        # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values
+        cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values
         # clip_logits = 100. * test_features @ clip_weights
-        # tip_logits = clip_logits + cache_logits * alpha
-        tip_logits = 10. * torch.exp(affinity @ clip_weights)
+        tip_logits = clip_logits + cache_logits * alpha
+        # tip_logits = 10. * torch.exp(affinity @ clip_weights)
 
         acc = cls_acc(tip_logits, test_labels)
 
@@ -320,7 +321,7 @@ def main():
     values = list(origin_acc.values())
     mean = sum(values) / len(values)
     origin_acc["mean"] = mean
-    origin_acc["task"] = "loss=loss1+loss2"
+    origin_acc["task"] = "Tip Adapter:loss=loss1+loss2"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:
