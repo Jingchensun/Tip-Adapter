@@ -8,4 +8,10 @@
     "origin_acc1": 71.50409727729316,
     "origin_acc2": 71.02828443034629,
     "mean": 71.16926601462684
+}{
+    "origin_acc0": 82.84430346286017,
+    "origin_acc1": 82.89717155696538,
+    "origin_acc2": 84.08670367433254,
+    "mean": 83.27605956471936,
+    "task": "loss=contrastive+crossentropy"
 }
