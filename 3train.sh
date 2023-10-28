@@ -13,4 +13,4 @@
 # CUDA_VISIBLE_DEVICES=3 python main.py --config configs/caltech101.yaml
 # CUDA_VISIBLE_DEVICES=3 python main.py --config configs/ucf101.yaml
 
-CUDA_VISIBLE_DEVICES=0 python main_imagenet.py --config configs/imagenet.yaml
+CUDA_VISIBLE_DEVICES=2 python main_imagenet.py --config configs/imagenet.yaml

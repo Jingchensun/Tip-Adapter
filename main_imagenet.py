@@ -157,7 +157,7 @@ def sample_u(w_matrix, sim_matrix):
     # print(u_dist.sample())
     return u_dist.sample()
 
-def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels, clip_weights, clip_model, train_loader_F, template, idx_to_class):
+def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels, clip_weights, clip_model, train_loader_F, template):
     
 
     # clip_model = load_clip_to_cpu(cfg)
@@ -182,12 +182,10 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
         loss_list = []
         print('Train Epoch: {:} / {:}'.format(train_idx, cfg['train_epoch']))
 
-        for i, (images, target) in enumerate(tqdm(train_loader_F)):
-            text = idx_to_class[target]
-
-
-
-            text = clip.tokenize(text[0]).cuda()
+        for i, (images, target, text) in enumerate(tqdm(train_loader_F)):
+            # text = idx_to_class[target]
+            # print(text)
+            text = clip.tokenize(text).cuda()
             images, target = images.cuda(), target.cuda()
             # print("target:", target) #torch.Size([256])
 
@@ -295,7 +293,7 @@ def main():
 
         print("Preparing ImageNet dataset.")
         imagenet = ImageNet(cfg['root_path'], cfg['shots'], preprocess)
-        idx_to_class = imagenet.idx_to_class
+        # idx_to_class = imagenet.idx_to_class
 
         test_loader = torch.utils.data.DataLoader(imagenet.test, batch_size=64, num_workers=8, shuffle=False)
 
@@ -344,7 +342,7 @@ def main():
         # run_tip_adapter(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights)
 
         # ------------------------------------------ Tip-Adapter-F ------------------------------------------
-        best_acc=run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels, clip_weights, clip_model, train_loader_F, imagenet.template, idx_to_class)
+        best_acc=run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels, clip_weights, clip_model, train_loader_F, imagenet.template)
 
         origin_acc[("origin_acc"+str(seed))] = best_acc
     
@@ -352,7 +350,7 @@ def main():
     values = list(origin_acc.values())
     mean = sum(values) / len(values)
     origin_acc["mean"] = mean
-    origin_acc["task"] = "adapter-loss=loss1+loss2"
+    origin_acc["task"] = "100epoch-adapter-loss=loss1+loss2"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:
