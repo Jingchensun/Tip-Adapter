@@ -90,7 +90,7 @@ def pre_load_features(cfg, split, clip_model, loader):
         features, labels = [], []
 
         with torch.no_grad():
-            for i, (images, target, text) in enumerate(tqdm(loader)):
+            for i, (images, target) in enumerate(tqdm(loader)):
                 images, target = images.cuda(), target.cuda()
                 image_features = clip_model.encode_image(images)
                 image_features /= image_features.norm(dim=-1, keepdim=True)
