@@ -143,6 +143,20 @@ def sample_u(w_matrix, sim_matrix):
     # print(u_dist.sample())
     return u_dist.sample()
 
+def update_center(teacher_output, center):
+    """
+    Update center
+    """
+    center_momentum = 0.9
+    center
+    batch_center = torch.sum(teacher_output, dim=0, keepdim=True)
+    batch_center = batch_center / (len(teacher_output))
+
+    # ema update
+    center = center * center_momentum + batch_center *\
+            (1 - center_momentum)
+    return center
+
 def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights, clip_model, train_loader_F, template):
     
 
@@ -167,7 +181,8 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
         correct_samples, all_samples = 0, 0
         loss_list = []
         print('Train Epoch: {:} / {:}'.format(train_idx, cfg['train_epoch']))
-
+        img_temp = 0.1
+        center = torch.zeros(512).cuda()
         for i, (images, target, text) in enumerate(tqdm(train_loader_F)):
             #print(text[0])
             text = clip.tokenize(text[0]).cuda()
@@ -181,10 +196,21 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
 
                 text_features = clip_model.encode_text(text)
                 text_features /= text_features.norm(dim=-1, keepdim=True)
-            affinity =model(image_features)
-            clip_logits = 10. * torch.exp(affinity @ text_features.t())
-            # print("clip_logits:", clip_logits)
-            groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
+            image_feats1 =model(image_features)
+
+            text_feats = text_features/img_temp # We can schedule the temperature here
+            
+
+            image_feats = F.softmax((image_feats1 - center)/img_temp, dim=-1)
+
+            loss = torch.sum(-image_feats *\
+                    F.log_softmax(text_feats, dim=-1), dim=-1).mean()
+            
+            center = update_center(image_feats, center)
+
+            # clip_logits = 10. * torch.exp(affinity @ text_features.t())
+            # # print("clip_logits:", clip_logits)
+            # groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
             # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
             # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values # cache_values torch.Size([1616, 101])
             # clip_logits = 100. * image_features @ clip_weights
@@ -192,11 +218,11 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             # print("tip_logits:", tip_logits.size())
             # print("cache_logits:", cache_logits.size())
 
-            loss1 = F.cross_entropy(clip_logits, groundtruth)
-            loss2 = F.cross_entropy(clip_logits.T, groundtruth)
-            loss = (loss1 + loss2)/2
+            # loss1 = F.cross_entropy(clip_logits, groundtruth)
+            # loss2 = F.cross_entropy(clip_logits.T, groundtruth)
+            # loss = (loss1 + loss2)/2
 
-            tip_logits = 10. * torch.exp(affinity @ clip_weights)
+            tip_logits = 10. * torch.exp(image_feats1 @ clip_weights)
             # print("tip_logits:", tip_logits)
             acc = cls_acc(tip_logits, target)
             correct_samples += acc / 100 * len(tip_logits)
@@ -320,7 +346,7 @@ def main():
     values = list(origin_acc.values())
     mean = sum(values) / len(values)
     origin_acc["mean"] = mean
-    origin_acc["task"] = "loss=loss1+loss2"
+    origin_acc["task"] = "dino contrastive"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:
