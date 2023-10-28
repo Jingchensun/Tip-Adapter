@@ -1,0 +1,13 @@
+{
+    "origin_acc0": 62.702,
+    "origin_acc1": 62.622,
+    "origin_acc2": 62.916,
+    "mean": 62.74666666666667,
+    "task": "20epoch-random-choose-adapter-Cross-entropy"
+}{
+    "origin_acc0": 62.702,
+    "origin_acc1": 61.668,
+    "origin_acc2": 61.994,
+    "mean": 62.12133333333333,
+    "task": "100epoch-random-choose-adapter-Cross-entropy"
+}

@@ -6,6 +6,9 @@ from collections import defaultdict
 import torch
 import torchvision
 import torchvision.transforms as transforms
+import clip
+
+from torchvision.datasets import ImageNet
 
 
 imagenet_classes = ["tench", "goldfish", "great white shark", "tiger shark", "hammerhead shark", "electric ray",
@@ -182,15 +185,46 @@ imagenet_templates = ["itap of a {}.",
                         "art of the {}.",
                         "a photo of the small {}."]
 
+template = 'a photo of a {}.'
+
+class CustomImageNetDataset(ImageNet):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Get the mapping from class names to class indices
+        # self.class_to_idx["letter box"] = 638
+        # print(self.classes[0])
+        # print(len(self.classes))
+        # self.class_to_index = {class_name: idx for idx, class_name in enumerate(self.classes)}
+        # self.index_to_class = {idx: class_name for class_name, idx in self.class_to_index.items()}
+        # print(self.index_to_class)
+        # self.classes=self.classes
+
+
+
+    def __getitem__(self, index):
+        # Call the parent class's __getitem__ method to get the original image and label
+        image, label = super().__getitem__(index)
+        # print("labellabellabellabellabel:", label)
+        
+        # Get the class name
+        class_name = random.choice(self.classes[label])
+        # print("class_nameclass_nameclass_name:", class_name)
+        # template = random.choice(imagenet_templates)
+        text = template.format(class_name)
+        
+        # Return the sample including the class name
+        return image, label, text
 
 class ImageNet():
 
     dataset_dir = 'data/imagenet'
 
     def __init__(self, root, num_shots, preprocess):
+        # _, preprocess = clip.load('ViT-B/16', device="cuda")
 
         self.dataset_dir = os.path.join(root, self.dataset_dir)
         self.image_dir = os.path.join(self.dataset_dir, 'images')
+        # self.template = template
 
         train_preprocess = transforms.Compose([
                                                 transforms.RandomResizedCrop(size=224, scale=(0.5, 1), interpolation=transforms.InterpolationMode.BICUBIC),
@@ -200,7 +234,9 @@ class ImageNet():
                                             ])
         test_preprocess = preprocess
 
-        self.train = torchvision.datasets.ImageNet(self.image_dir, split='train', transform=train_preprocess)
+        # self.train0 = torchvision.datasets.ImageNet(self.image_dir, split='train', transform=train_preprocess)
+        self.train = CustomImageNetDataset(self.image_dir, split='train', transform=train_preprocess)
+
         self.val = torchvision.datasets.ImageNet(self.image_dir, split='val', transform=test_preprocess)
         self.test = torchvision.datasets.ImageNet(self.image_dir, split='val', transform=test_preprocess)
         
