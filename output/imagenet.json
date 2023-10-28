@@ -22,4 +22,16 @@
     "origin_acc2": 52.268,
     "mean": 52.08733333333333,
     "task": "20epoch-choose1-adapter-loss=loss1+loss2"
+}{
+    "origin_acc0": 51.5,
+    "origin_acc1": 50.866,
+    "origin_acc2": 51.508,
+    "mean": 51.291333333333334,
+    "task": "20epoch-image-adapter-loss=loss1+loss2"
+}{
+    "origin_acc0": 50.534,
+    "origin_acc1": 50.874,
+    "origin_acc2": 49.834,
+    "mean": 50.41400000000001,
+    "task": "contrastive loss-no torch.exp"
 }

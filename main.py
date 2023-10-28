@@ -177,13 +177,16 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             with torch.no_grad():
                 image_features = clip_model.encode_image(images)
                 image_features /= image_features.norm(dim=-1, keepdim=True)
-                # print("image_features:", image_features.size()) #torch.Size([256, 512])
+                # print("image_features:", image_features) #[[-0.0468, -0.0370, -0.0167,  ..., -0.0053,  0.0275, -0.0346],
 
                 text_features = clip_model.encode_text(text)
                 text_features /= text_features.norm(dim=-1, keepdim=True)
             affinity =model(image_features)
-            clip_logits = 10. * torch.exp(affinity @ text_features.t())
-            # print("clip_logits:", clip_logits)
+            # clip_logits = 10. * torch.exp(affinity @ text_features.t())
+            # print("clip_logits:", clip_logits) #[[11.8359, 11.3750, 11.1328,  ..., 11.4375, 11.6250, 11.1797],
+
+            clip_logits = 100. * (affinity @ text_features.t())
+            # print("clip_logits:", clip_logits) #[[ 6.2188, -0.4546, -0.9707,  ..., -7.3867, -7.3867, -0.8774],
             groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
             # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
             # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values # cache_values torch.Size([1616, 101])
@@ -196,7 +199,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             loss2 = F.cross_entropy(clip_logits.T, groundtruth)
             loss = (loss1 + loss2)/2
 
-            tip_logits = 10. * torch.exp(affinity @ clip_weights)
+            tip_logits = 100. * (affinity @ clip_weights)
             # print("tip_logits:", tip_logits)
             acc = cls_acc(tip_logits, target)
             correct_samples += acc / 100 * len(tip_logits)
@@ -219,7 +222,8 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
         # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values
         # clip_logits = 100. * test_features @ clip_weights
         # tip_logits = clip_logits + cache_logits * alpha
-        tip_logits = 10. * torch.exp(affinity @ clip_weights)
+        tip_logits = 100. * (affinity @ clip_weights)
+        # print('tip_logits:', tip_logits) # [[  4.8125,  -6.4531,  -4.2344,  ...,  -4.4141,  -6.8164,  -3.0684],
 
         acc = cls_acc(tip_logits, test_labels)
 
@@ -307,6 +311,8 @@ def main():
         # Pre-load test features
         print("\nLoading visual features and labels from test set.")
         test_features, test_labels = pre_load_features(cfg, "test", clip_model, test_loader)
+        # print("test_features", test_features) #[ 0.0048, -0.0589,  0.0343,  ..., -0.0054, -0.0693,  0.0418]
+        # print("test_labels", test_labels) #[ 0,  0,  0,  ..., 46, 46, 46]
 
         # ------------------------------------------ Tip-Adapter ------------------------------------------
         # run_tip_adapter(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights)
@@ -320,7 +326,7 @@ def main():
     values = list(origin_acc.values())
     mean = sum(values) / len(values)
     origin_acc["mean"] = mean
-    origin_acc["task"] = "loss=loss1+loss2"
+    origin_acc["task"] = "contrastive loss-no torch.exp"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:

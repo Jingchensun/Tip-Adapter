@@ -14,4 +14,10 @@
     "origin_acc2": 79.26732673267327,
     "mean": 79.07040704070407,
     "task": "loss=loss1+loss2"
+}{
+    "origin_acc0": 77.92079207920793,
+    "origin_acc1": 77.96369636963696,
+    "origin_acc2": 78.22772277227723,
+    "mean": 78.03740374037403,
+    "task": "contrastive loss-no torch.exp"
 }

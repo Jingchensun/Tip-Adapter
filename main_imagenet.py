@@ -197,7 +197,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
                 text_features = clip_model.encode_text(text)
                 text_features /= text_features.norm(dim=-1, keepdim=True)
             affinity =model(image_features)
-            clip_logits = 10. * torch.exp(affinity @ text_features.t())
+            clip_logits = 100. * (affinity @ text_features.t())
             # print("clip_logits:", clip_logits)
             groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
             # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
@@ -211,7 +211,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
             loss2 = F.cross_entropy(clip_logits.T, groundtruth)
             loss = (loss1 + loss2)/2
 
-            tip_logits = 10. * torch.exp(affinity @ clip_weights)
+            tip_logits = 100. * (affinity @ clip_weights)
             # print("tip_logits:", tip_logits)
             acc = cls_acc(tip_logits, target)
             correct_samples += acc / 100 * len(tip_logits)
@@ -234,7 +234,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
         # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values
         # clip_logits = 100. * test_features @ clip_weights
         # tip_logits = clip_logits + cache_logits * alpha
-        tip_logits = 10. * torch.exp(affinity @ clip_weights)
+        tip_logits = 100. * (affinity @ clip_weights)
 
         acc = cls_acc(tip_logits, test_labels)
 
@@ -350,7 +350,7 @@ def main():
     values = list(origin_acc.values())
     mean = sum(values) / len(values)
     origin_acc["mean"] = mean
-    origin_acc["task"] = "20epoch-choose1-adapter-loss=loss1+loss2"
+    origin_acc["task"] = "contrastive loss-no torch.exp"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:
