@@ -174,7 +174,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
 
     beta, alpha = cfg['init_beta'], cfg['init_alpha']
     best_acc, best_epoch = 0.0, 0
-    cfg['train_epoch'] = 100
+    cfg['train_epoch'] = 20
     for train_idx in range(cfg['train_epoch']): #cfg['train_epoch']
         # Train
         model.train().cuda()
@@ -350,7 +350,7 @@ def main():
     values = list(origin_acc.values())
     mean = sum(values) / len(values)
     origin_acc["mean"] = mean
-    origin_acc["task"] = "100epoch-adapter-loss=loss1+loss2"
+    origin_acc["task"] = "20epoch-choose1-adapter-loss=loss1+loss2"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:

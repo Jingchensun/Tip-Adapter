@@ -207,7 +207,7 @@ class CustomImageNetDataset(ImageNet):
         # print("labellabellabellabellabel:", label)
         
         # Get the class name
-        class_name = random.choice(self.classes[label])
+        class_name = self.classes[label][0]
         # print("class_nameclass_nameclass_name:", class_name)
         # template = random.choice(imagenet_templates)
         text = template.format(class_name)

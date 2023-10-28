@@ -1,0 +1,25 @@
+{
+    "origin_acc0": 54.064,
+    "origin_acc1": 54.644,
+    "origin_acc2": 53.474,
+    "mean": 54.06066666666666,
+    "task": "20epoch-adapter-loss=loss1+loss2"
+}{
+    "origin_acc0": 54.122,
+    "origin_acc1": 54.824,
+    "origin_acc2": 54.126,
+    "mean": 54.35733333333334,
+    "task": "50epoch-adapter-loss=loss1+loss2"
+}{
+    "origin_acc0": 54.122,
+    "origin_acc1": 54.258,
+    "origin_acc2": 53.262,
+    "mean": 53.88066666666666,
+    "task": "100epoch-adapter-loss=loss1+loss2"
+}{
+    "origin_acc0": 52.054,
+    "origin_acc1": 51.94,
+    "origin_acc2": 52.268,
+    "mean": 52.08733333333333,
+    "task": "20epoch-choose1-adapter-loss=loss1+loss2"
+}
