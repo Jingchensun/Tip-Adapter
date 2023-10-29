@@ -191,11 +191,11 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
 
             with torch.no_grad():
                 image_features = clip_model.encode_image(images)
-                image_features /= image_features.norm(dim=-1, keepdim=True)
+                # image_features /= image_features.norm(dim=-1, keepdim=True)
                 # print("image_features:", image_features.size()) #torch.Size([256, 512])
 
                 text_features = clip_model.encode_text(text)
-                text_features /= text_features.norm(dim=-1, keepdim=True)
+                # text_features /= text_features.norm(dim=-1, keepdim=True)
             image_feats1 =model(image_features)
 
             text_feats = text_features/img_temp # We can schedule the temperature here
@@ -206,7 +206,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             loss = torch.sum(-image_feats *\
                     F.log_softmax(text_feats, dim=-1), dim=-1).mean()
             
-            center = update_center(image_feats, center)
+            center = update_center(image_feats.clone().detach(), center)
 
             # clip_logits = 10. * torch.exp(affinity @ text_features.t())
             # # print("clip_logits:", clip_logits)
