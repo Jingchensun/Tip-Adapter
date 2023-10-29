@@ -181,7 +181,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
         correct_samples, all_samples = 0, 0
         loss_list = []
         print('Train Epoch: {:} / {:}'.format(train_idx, cfg['train_epoch']))
-
+        cylambda1=cylambda2=0.25
         for i, (images, target, text) in enumerate(tqdm(train_loader_F)):
             # text = idx_to_class[target]
             # print(text)
@@ -197,7 +197,8 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
                 text_features = clip_model.encode_text(text)
                 text_features /= text_features.norm(dim=-1, keepdim=True)
             affinity =model(image_features)
-            contras_logits = 10. * torch.exp(affinity @ text_features.t())
+            logits_text_per_image = 10. * torch.exp(affinity @ text_features.t())
+            logits_image_per_text = logits_text_per_image.t()
             groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
             # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
             # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values # cache_values torch.Size([1616, 101])
@@ -206,11 +207,26 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
             # print("tip_logits:", tip_logits.size())
             # print("cache_logits:", cache_logits.size())
 
-            loss1 = F.cross_entropy(contras_logits, groundtruth)
-            loss2 = F.cross_entropy(contras_logits.T, groundtruth)
+            loss1 = F.cross_entropy(logits_text_per_image, groundtruth)
+            loss2 = F.cross_entropy(logits_image_per_text, groundtruth)
             loss12 = (loss1 + loss2)/2
             loss3 = F.cross_entropy(clip_logits, target)
-            loss = loss12+loss3
+            # loss = loss12+loss3
+
+            inmodal_cyclic_loss = torch.tensor(0).cuda()
+            logits_image_per_image = 100. * affinity @ affinity.t()
+            logits_text_per_text = 100. * text_features @ text_features.t()
+            inmodal_cyclic_loss = (logits_image_per_image - logits_text_per_text).square().mean() / (100. * 100.) * len(images)
+            
+            crossmodal_cyclic_loss = torch.tensor(0).cuda()
+            crossmodal_cyclic_loss = (logits_text_per_image - logits_image_per_text).square().mean() / (100. * 100.) * len(images)
+
+            cyclic_loss = cylambda1 * inmodal_cyclic_loss + cylambda2 * crossmodal_cyclic_loss
+            # loss = contrastive_loss + cyclic_loss
+
+    
+            loss = loss12 + loss3 + cyclic_loss
+
             # print("loss:", loss)
             tip_logits = 10. * torch.exp(affinity @ clip_weights)
             # print("tip_logits:", tip_logits.size())
@@ -352,7 +368,7 @@ def main():
     values = list(origin_acc.values())
     mean = sum(values) / len(values)
     origin_acc["mean"] = mean
-    origin_acc["task"] = "contrastive + cross entropy loss-scale-10"
+    origin_acc["task"] = "clip + cycliploss + cross entropy loss-scale-10"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:

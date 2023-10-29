@@ -161,6 +161,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
     beta, alpha = cfg['init_beta'], cfg['init_alpha']
     best_acc, best_epoch = 0.0, 0
     cfg['train_epoch'] = 100
+    cylambda1=cylambda2=0.25
     for train_idx in range(cfg['train_epoch']): #cfg['train_epoch']
         # Train
         model.train().cuda()
@@ -182,23 +183,46 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
                 text_features = clip_model.encode_text(text)
                 text_features /= text_features.norm(dim=-1, keepdim=True)
             affinity =model(image_features)
-            clip_logits = 100. * torch.exp(affinity @ text_features.t())
+            logits_text_per_image = 10. * torch.exp(affinity @ text_features.t())
+            logits_image_per_text = logits_text_per_image.t()
             # print("clip_logits:", clip_logits)
             groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
             # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
             # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values # cache_values torch.Size([1616, 101])
-            clip_logits2 = 100. * torch.exp(affinity @ clip_weights)
+            clip_logits2 = 10. * torch.exp(affinity @ clip_weights)
             # tip_logits = clip_logits + cache_logits * alpha
             # print("tip_logits:", tip_logits.size())
             # print("cache_logits:", cache_logits.size())
 
-            loss1 = F.cross_entropy(clip_logits, groundtruth)
-            loss2 = F.cross_entropy(clip_logits.T, groundtruth)
+            loss1 = F.cross_entropy(logits_text_per_image, groundtruth)
+            loss2 = F.cross_entropy(logits_image_per_text, groundtruth)
             loss12 = (loss1 + loss2)/2
-            loss3 = F.cross_entropy(clip_logits2, target)
-            loss = loss12 + loss3
 
-            tip_logits = 100. * torch.exp(affinity @ clip_weights)
+            # if(options.inmodal):
+            #     crossmodal_contrastive_loss = (criterion(logits_text_per_image, target) + criterion(logits_image_per_text, target)) / 2
+            #     inmodal_contrastive_loss = (criterion(logits_image_per_augmented_image, target) + criterion(logits_text_per_augmented_text, target)) / 2
+            #     contrastive_loss = (crossmodal_contrastive_loss + inmodal_contrastive_loss) / 2
+            # else:
+            #     crossmodal_contrastive_loss = (criterion(logits_text_per_image, target) + criterion(logits_image_per_text, target)) / 2
+            #     contrastive_loss = crossmodal_contrastive_loss
+            # logits_text_per_image = umodel.logit_scale.exp() * image_embeds @ text_embeds.t()
+            # logits_image_per_text = logits_text_per_image.t()
+            
+            inmodal_cyclic_loss = torch.tensor(0).cuda()
+            logits_image_per_image = 100. * affinity @ affinity.t()
+            logits_text_per_text = 100. * text_features @ text_features.t()
+            inmodal_cyclic_loss = (logits_image_per_image - logits_text_per_text).square().mean() / (100. * 100.) * len(images)
+            
+            crossmodal_cyclic_loss = torch.tensor(0).cuda()
+            crossmodal_cyclic_loss = (logits_text_per_image - logits_image_per_text).square().mean() / (100. * 100.) * len(images)
+
+            cyclic_loss = cylambda1 * inmodal_cyclic_loss + cylambda2 * crossmodal_cyclic_loss
+            # loss = contrastive_loss + cyclic_loss
+
+            loss3 = F.cross_entropy(clip_logits2, target)
+            loss = loss12 + loss3 + cyclic_loss
+
+            tip_logits = 10. * torch.exp(affinity @ clip_weights)
             # print("tip_logits:", tip_logits)
             acc = cls_acc(tip_logits, target)
             correct_samples += acc / 100 * len(tip_logits)
@@ -221,7 +245,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
         # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values
         # clip_logits = 100. * test_features @ clip_weights
         # tip_logits = clip_logits + cache_logits * alpha
-        tip_logits = 100. * torch.exp(affinity @ clip_weights)
+        tip_logits = 10. * torch.exp(affinity @ clip_weights)
 
         acc = cls_acc(tip_logits, test_labels)
 
@@ -322,7 +346,7 @@ def main():
     values = list(origin_acc.values())
     mean = sum(values) / len(values)
     origin_acc["mean"] = mean
-    origin_acc["task"] = "loss=contrastive+crossentropy-scale100"
+    origin_acc["task"] = "loss=cyclip+crossentropy-exp.scale100"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:

@@ -20,4 +20,10 @@
     "origin_acc2": 69.91725768321513,
     "mean": 70.27186761229315,
     "task": "loss=contrastive+crossentropy-scale100"
+}{
+    "origin_acc0": 38.002364066193856,
+    "origin_acc1": 37.64775413711584,
+    "origin_acc2": 55.378250591016545,
+    "mean": 43.67612293144208,
+    "task": "loss=cyclip+crossentropy-exp.scale100"
 }
