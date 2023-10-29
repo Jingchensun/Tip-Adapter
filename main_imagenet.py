@@ -30,7 +30,7 @@ from datasets.imagenet import ImageNet
 import clip
 from utils import *
 
-device = "cuda:0" if torch.cuda.is_available() else "cpu"
+device = "cuda" if torch.cuda.is_available() else "cpu"
 a_u = 1
 b_u = 1
 a_minus = 10
@@ -174,7 +174,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
 
     beta, alpha = cfg['init_beta'], cfg['init_alpha']
     best_acc, best_epoch = 0.0, 0
-    cfg['train_epoch'] = 1
+    cfg['train_epoch'] = 20
     for train_idx in range(cfg['train_epoch']): #cfg['train_epoch']
         # Train
         model.train().cuda()
@@ -197,24 +197,24 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
                 text_features = clip_model.encode_text(text)
                 text_features /= text_features.norm(dim=-1, keepdim=True)
             affinity =model(image_features)
-            clip_logits = 10. * torch.exp(affinity @ text_features.t())
-            # print("clip_logits:", clip_logits)
+            contras_logits = 10. * torch.exp(affinity @ text_features.t())
             groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
             # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
             # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values # cache_values torch.Size([1616, 101])
-            # clip_logits = 100. * image_features @ clip_weights
+            clip_logits = 10. * torch.exp(affinity @ clip_weights)
             # tip_logits = clip_logits + cache_logits * alpha
             # print("tip_logits:", tip_logits.size())
             # print("cache_logits:", cache_logits.size())
 
-            loss1 = F.cross_entropy(clip_logits, groundtruth)
-            loss2 = F.cross_entropy(clip_logits.T, groundtruth)
+            loss1 = F.cross_entropy(contras_logits, groundtruth)
+            loss2 = F.cross_entropy(contras_logits.T, groundtruth)
             loss12 = (loss1 + loss2)/2
             loss3 = F.cross_entropy(clip_logits, target)
             loss = loss12+loss3
-
+            # print("loss:", loss)
             tip_logits = 10. * torch.exp(affinity @ clip_weights)
-            # print("tip_logits:", tip_logits)
+            # print("tip_logits:", tip_logits.size())
+            # print("target:", target.size())
             acc = cls_acc(tip_logits, target)
             correct_samples += acc / 100 * len(tip_logits)
             all_samples += len(tip_logits)
@@ -352,7 +352,7 @@ def main():
     values = list(origin_acc.values())
     mean = sum(values) / len(values)
     origin_acc["mean"] = mean
-    origin_acc["task"] = "contrastive + cross entropy loss-no torch.exp"
+    origin_acc["task"] = "contrastive + cross entropy loss-scale-10"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:
