@@ -194,7 +194,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
             # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
             # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values # cache_values torch.Size([1616, 101])
-            clip_logits2 = 100. * (affinity @ clip_weights)
+            clip_logits2 = 10. * torch.exp(affinity @ clip_weights)
             # tip_logits = clip_logits + cache_logits * alpha
             # print("tip_logits:", tip_logits.size())
             # print("clip_logits2:", clip_logits2)
@@ -216,7 +216,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             inmodal_cyclic_loss = torch.tensor(0).cuda()
             # print("affinity:", affinity) #[[0.0580, 0.0000, 0.0699,  ..., 0.0483, 0.0004, 0.0854]
             # print("text_features:", text_features) # [ 0.0374,  0.0264, -0.0263,  ..., -0.0256, -0.0074,  0.0244],
-            logits_image_per_image = 100. *(affinity @ affinity.t())
+            logits_image_per_image = 100. * (affinity @ affinity.t())
             # print("logits_image_per_image:", logits_image_per_image) #[[1.9082, 1.4209, 1.4189,  ..., 1.8848, 1.4014, 1.3184],
             logits_text_per_text = 100. * (text_features @ text_features.t())
             # print("logits_text_per_text:", logits_text_per_text) #[[132.2500, 109.5625,  92.3750,  ..., 132.2500, 119.6250, 112.3125],
@@ -237,7 +237,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             # print("cycli_loss:", cyclic_loss) #tensor(2.4590
             loss = loss12 + loss3 + cyclic_loss 
 
-            tip_logits = 100. * (affinity @ clip_weights)
+            tip_logits = 10. * torch.exp(affinity @ clip_weights)
             # print("tip_logits:", tip_logits)
             acc = cls_acc(tip_logits, target)
             correct_samples += acc / 100 * len(tip_logits)
@@ -366,7 +366,7 @@ def main():
     values = list(origin_acc.values())
     mean = sum(values) / len(values)
     origin_acc["mean"] = mean
-    origin_acc["task"] = "loss=cyclip+crossentropy-only100"
+    origin_acc["task"] = "loss=cyclip+crossentropy-imgfeat-100, clip weight-exp.10"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:

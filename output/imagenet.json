@@ -28,4 +28,10 @@
     "origin_acc2": 65.396,
     "mean": 65.42666666666668,
     "task": "clip + cycliploss + cross entropy -scale-100"
+}{
+    "origin_acc0": 49.092,
+    "origin_acc1": 51.08,
+    "origin_acc2": 51.618,
+    "mean": 50.596666666666664,
+    "task": "loss=cyclip+crossentropy-imgfeat-100, clip weight-exp.10"
 }

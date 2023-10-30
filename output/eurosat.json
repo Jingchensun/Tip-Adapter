@@ -32,4 +32,10 @@
     "origin_acc2": 81.4320987654321,
     "mean": 81.1604938271605,
     "task": "loss=cyclip+crossentropy-only100"
+}{
+    "origin_acc0": 76.4320987654321,
+    "origin_acc1": 86.0246913580247,
+    "origin_acc2": 80.12345679012346,
+    "mean": 80.86008230452676,
+    "task": "loss=cyclip+crossentropy-imgfeat-100, clip weight-exp.10"
 }

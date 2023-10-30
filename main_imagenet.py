@@ -202,7 +202,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
             groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
             # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
             # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values # cache_values torch.Size([1616, 101])
-            clip_logits = 100. * (affinity @ clip_weights)
+            clip_logits = 10. * torch.exp(affinity @ clip_weights)
             # tip_logits = clip_logits + cache_logits * alpha
             # print("tip_logits:", tip_logits.size())
             # print("cache_logits:", cache_logits.size())
@@ -228,7 +228,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
             loss = loss12 + loss3 + cyclic_loss
 
             # print("loss:", loss)
-            tip_logits = 100. * (affinity @ clip_weights)
+            tip_logits = 10. * torch.exp(affinity @ clip_weights)
             # print("tip_logits:", tip_logits.size())
             # print("target:", target.size())
             acc = cls_acc(tip_logits, target)
@@ -252,7 +252,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
         # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values
         # clip_logits = 100. * test_features @ clip_weights
         # tip_logits = clip_logits + cache_logits * alpha
-        tip_logits = 100. * (affinity @ clip_weights)
+        tip_logits = 10. * torch.exp(affinity @ clip_weights)
 
         acc = cls_acc(tip_logits, test_labels)
 
@@ -368,7 +368,7 @@ def main():
     values = list(origin_acc.values())
     mean = sum(values) / len(values)
     origin_acc["mean"] = mean
-    origin_acc["task"] = "clip + cycliploss + cross entropy -scale-100"
+    origin_acc["task"] = "loss=cyclip+crossentropy-imgfeat-100, clip weight-exp.10"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:
