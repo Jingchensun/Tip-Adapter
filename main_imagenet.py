@@ -352,7 +352,7 @@ def main():
     values = list(origin_acc.values())
     mean = sum(values) / len(values)
     origin_acc["mean"] = mean
-    origin_acc["task"] = "contrastive + cross entropy loss-scale-10"
+    origin_acc["task"] = "contrastive + cross entropy loss-scale-10- augmentation"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:

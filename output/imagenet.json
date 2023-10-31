@@ -16,4 +16,16 @@
     "origin_acc2": 63.954,
     "mean": 64.39200000000001,
     "task": "contrastive + cross entropy loss-scale-10"
+}{
+    "origin_acc0": 64.468,
+    "origin_acc1": 64.754,
+    "origin_acc2": 63.954,
+    "mean": 64.39200000000001,
+    "task": "contrastive + cross entropy loss-scale-10"
+}{
+    "origin_acc0": 64.974,
+    "origin_acc1": 65.106,
+    "origin_acc2": 65.1,
+    "mean": 65.05999999999999,
+    "task": "contrastive + cross entropy loss-scale-10- augmentation"
 }
