@@ -28,4 +28,10 @@
     "origin_acc2": 65.1,
     "mean": 65.05999999999999,
     "task": "contrastive + cross entropy loss-scale-10- augmentation"
+}{
+    "origin_acc0": 62.524,
+    "origin_acc1": 62.896,
+    "origin_acc2": 62.428,
+    "mean": 62.61600000000001,
+    "task": "contrastive + cross entropy loss-scale-10- RenyiCL-augmentation"
 }

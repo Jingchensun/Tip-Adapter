@@ -16,6 +16,12 @@ from utils import *
 from torch.distributions.gamma import Gamma
 import json
 
+import renyicl.builder
+import renyicl.loader
+import renyicl.optimizer
+from timm.data.auto_augment import rand_augment_transform
+from timm.data.random_erasing import RandomErasing
+
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 a_u = 1
 b_u = 1
@@ -293,6 +299,37 @@ def main():
             transforms.Normalize(mean=(0.48145466, 0.4578275, 0.40821073), std=(0.26862954, 0.26130258, 0.27577711))
         ])
 
+        # train_tranform = transforms.Compose([
+        #     transforms.RandomResizedCrop(size=224, scale=(0.5, 1), interpolation=transforms.InterpolationMode.BICUBIC),
+        #     transforms.RandomHorizontalFlip(p=0.5),
+        #     transforms.RandomApply([transforms.ColorJitter(0.4, 0.4, 0.4, 0.1)], p=0.8),
+        #     transforms.RandomGrayscale(p=0.2),
+        #     transforms.ToTensor(),
+        #     transforms.Normalize(mean=(0.48145466, 0.4578275, 0.40821073), std=(0.26862954, 0.26130258, 0.27577711))
+        # ])
+        rgb_mean = [0.48145466, 0.4578275, 0.40821073]
+        ra_params = dict(
+            translate_const=int(224 * 0.45),
+            img_mean=tuple([min(255, round(255 * x)) for x in rgb_mean]),
+        )
+
+        train_tranform = transforms.Compose([
+        transforms.RandomResizedCrop(224, scale=(0.08, 1.)),
+        transforms.RandomHorizontalFlip(),
+        transforms.RandomApply([
+            transforms.ColorJitter(0.4, 0.4, 0.2, 0.1)  # not strengthened
+        ], p=0.8),
+        transforms.RandomApply([renyicl.loader.GaussianBlur([.1, 2.])], p=0.1),
+        rand_augment_transform('rand-n{}-m{}-mstd0.5'.format(2,10), ra_params),
+        transforms.RandomApply([renyicl.loader.Solarize()], p=0.2),
+        transforms.RandomGrayscale(p=0.2),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=(0.48145466, 0.4578275, 0.40821073), std=(0.26862954, 0.26130258, 0.27577711)),
+        transforms.RandomApply(
+            [RandomErasing(0.2, mode='pixel', max_count=1, device='cpu')], 
+        p=0.)
+        ])
+
         train_loader_cache = build_data_loader(dataset.template, data_source=dataset.train_x, batch_size=256, tfm=train_tranform, is_train=True, shuffle=False)
         train_loader_F = build_data_loader(dataset.template, data_source=dataset.train_x, batch_size=256, tfm=train_tranform, is_train=True, shuffle=True)
 
@@ -324,7 +361,7 @@ def main():
     values = list(origin_acc.values())
     mean = sum(values) / len(values)
     origin_acc["mean"] = mean
-    origin_acc["task"] = "loss=contrastive+crossentropy-scale100-more augmentation"
+    origin_acc["task"] = "loss=contrastive+crossentropy-scale100-RenyiCL augmentation"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:

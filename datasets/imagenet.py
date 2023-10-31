@@ -10,6 +10,12 @@ import clip
 
 from torchvision.datasets import ImageNet
 
+import renyicl.builder
+import renyicl.loader
+import renyicl.optimizer
+from timm.data.auto_augment import rand_augment_transform
+from timm.data.random_erasing import RandomErasing
+
 
 imagenet_classes = ["tench", "goldfish", "great white shark", "tiger shark", "hammerhead shark", "electric ray",
                         "stingray", "rooster", "hen", "ostrich", "brambling", "goldfinch", "house finch", "junco",
@@ -226,14 +232,37 @@ class ImageNet():
         self.image_dir = os.path.join(self.dataset_dir, 'images')
         # self.template = template
 
+        rgb_mean = [0.48145466, 0.4578275, 0.40821073]
+        ra_params = dict(
+            translate_const=int(224 * 0.45),
+            img_mean=tuple([min(255, round(255 * x)) for x in rgb_mean]),
+        )
+
         train_preprocess = transforms.Compose([
-                                                transforms.RandomResizedCrop(size=224, scale=(0.5, 1), interpolation=transforms.InterpolationMode.BICUBIC),
-                                                transforms.RandomHorizontalFlip(p=0.5),
-                                                transforms.RandomApply([transforms.ColorJitter(0.4, 0.4, 0.4, 0.1)], p=0.8),
-                                                transforms.RandomGrayscale(p=0.2),
-                                                transforms.ToTensor(),
-                                                transforms.Normalize(mean=(0.48145466, 0.4578275, 0.40821073), std=(0.26862954, 0.26130258, 0.27577711))
-                                            ])
+            transforms.RandomResizedCrop(224, scale=(0.08, 1.)),
+            transforms.RandomHorizontalFlip(),
+            transforms.RandomApply([
+                transforms.ColorJitter(0.4, 0.4, 0.2, 0.1)  # not strengthened
+            ], p=0.8),
+            transforms.RandomApply([renyicl.loader.GaussianBlur([.1, 2.])], p=0.1),
+            rand_augment_transform('rand-n{}-m{}-mstd0.5'.format(2,10), ra_params),
+            transforms.RandomApply([renyicl.loader.Solarize()], p=0.2),
+            transforms.RandomGrayscale(p=0.2),
+            transforms.ToTensor(),
+            transforms.Normalize(mean=(0.48145466, 0.4578275, 0.40821073), std=(0.26862954, 0.26130258, 0.27577711)),
+            transforms.RandomApply(
+                [RandomErasing(0.2, mode='pixel', max_count=1, device='cpu')], 
+            p=0.)
+        ])
+
+        # train_preprocess = transforms.Compose([
+        #                                         transforms.RandomResizedCrop(size=224, scale=(0.5, 1), interpolation=transforms.InterpolationMode.BICUBIC),
+        #                                         transforms.RandomHorizontalFlip(p=0.5),
+        #                                         transforms.RandomApply([transforms.ColorJitter(0.4, 0.4, 0.4, 0.1)], p=0.8),
+        #                                         transforms.RandomGrayscale(p=0.2),
+        #                                         transforms.ToTensor(),
+        #                                         transforms.Normalize(mean=(0.48145466, 0.4578275, 0.40821073), std=(0.26862954, 0.26130258, 0.27577711))
+        #                                     ])
         test_preprocess = preprocess
 
         # self.train0 = torchvision.datasets.ImageNet(self.image_dir, split='train', transform=train_preprocess)

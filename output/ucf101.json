@@ -26,4 +26,10 @@
     "origin_acc2": 82.57996299233413,
     "mean": 82.77381267071989,
     "task": "loss=contrastive+crossentropy-scale100-more augmentation"
+}{
+    "origin_acc0": 80.49167327517843,
+    "origin_acc1": 80.62384351044145,
+    "origin_acc2": 81.52260111022997,
+    "mean": 80.87937263194995,
+    "task": "loss=contrastive+crossentropy-scale100-RenyiCL augmentation"
 }
