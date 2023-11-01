@@ -164,7 +164,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
     
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg['lr'], eps=1e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, cfg['train_epoch'] * len(train_loader_F))
-    wandb.init(project="tip-adapter", entity="jingchensun")
+
     wandb.config.train_epochs = 100
 
     beta, alpha = cfg['init_beta'], cfg['init_alpha']
@@ -284,6 +284,8 @@ def main():
     # Prepare dataset
     origin_acc = {}
     for seed in range(3):
+        wandb.init(project=("tip-adapter"), entity="jingchensun")
+        wandb.run.name = str(cfg['dataset']) + 'seed-'+str(seed)
         random.seed(seed)
         torch.manual_seed(seed)
         print("Seed=", seed)
