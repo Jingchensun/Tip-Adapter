@@ -15,6 +15,7 @@ import clip
 from utils import *
 from torch.distributions.gamma import Gamma
 import json
+import wandb
 
 import renyicl.builder
 import renyicl.loader
@@ -163,10 +164,12 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
     
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg['lr'], eps=1e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, cfg['train_epoch'] * len(train_loader_F))
+    wandb.init(project="tip-adapter", entity="jingchensun")
+    wandb.config.train_epochs = 100
 
     beta, alpha = cfg['init_beta'], cfg['init_alpha']
     best_acc, best_epoch = 0.0, 0
-    cfg['train_epoch'] = 100
+    cfg['train_epoch'] = wandb.config.train_epochs
     for train_idx in range(cfg['train_epoch']): #cfg['train_epoch']
         # Train
         model.train().cuda()
@@ -216,6 +219,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             optimizer.step()
             scheduler.step()
 
+        wandb.log({"epoch": train_idx, "loss12": loss12,"loss3": loss3, "loss": loss,"train_accuracy": acc})
         current_lr = scheduler.get_last_lr()[0]
         print('LR: {:.6f}, Acc: {:.4f} ({:}/{:}), Loss: {:.4f}'.format(current_lr, correct_samples / all_samples, correct_samples, all_samples, sum(loss_list)/len(loss_list)))
 
@@ -236,7 +240,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             best_acc = acc
             best_epoch = train_idx
             torch.save(model, cfg['cache_dir'] + "/best_F_" + str(cfg['shots']) + "shots.pt")
-
+    wandb.finish()
     model = torch.load(cfg['cache_dir'] + "/best_F_" + str(cfg['shots']) + "shots.pt")
     print(f"**** After fine-tuning, Tip-Adapter-F's best test accuracy: {best_acc:.2f}, at epoch: {best_epoch}. ****\n")
 
