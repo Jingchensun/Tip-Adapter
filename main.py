@@ -205,13 +205,24 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
                 U = sample_u(weights, clip_logits)
                 weights = sample_w(U, clip_logits)
             print("weights:", weights)
-            clip_logits = weights*clip_logits 
-            print("clip_logits:", clip_logits)
-            loss1 = F.cross_entropy(clip_logits, groundtruth)
-            loss2 = F.cross_entropy(clip_logits.T, groundtruth)
-            loss12 = (loss1 + loss2)/2
+
+            weight_logit = weights*clip_logits
+            pos_sim = weight_logit.masked_select(torch.eye(len(images)).bool().to(device))
+            nge_sim = weight_logit.masked_select(~torch.eye(len(images)).bool().to(device)).reshape(len(images), -1)
+            
+            loss12 = (- torch.log(pos_sim / nge_sim.sum(dim=-1))).mean()
+            
+
+            # # clip_logits = weights*clip_logits 
+            # # print("clip_logits:", clip_logits)
+            # loss1 = F.cross_entropy(clip_logits, groundtruth)
+            # loss2 = F.cross_entropy(clip_logits.T, groundtruth)
+            # loss12 = (loss1 + loss2)/2
+
+
             loss3 = F.cross_entropy(clip_logits2, target)
-            loss = loss12 + loss3*0.25
+            loss = loss12 + loss3
+
 
             tip_logits = 100. * torch.exp(affinity @ clip_weights)
             print("tip_logits:", tip_logits)
@@ -225,7 +236,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             optimizer.step()
             scheduler.step()
 
-        wandb.log({"epoch": train_idx, "loss1": loss1,"loss2": loss2,"loss3": loss3, "loss": loss,"train_accuracy": acc})
+        wandb.log({"epoch": train_idx, "loss12": loss12, "loss3": loss3, "loss": loss,"train_accuracy": acc})
         current_lr = scheduler.get_last_lr()[0]
         print('LR: {:.6f}, Acc: {:.4f} ({:}/{:}), Loss: {:.4f}'.format(current_lr, correct_samples / all_samples, correct_samples, all_samples, sum(loss_list)/len(loss_list)))
 

@@ -1,0 +1,183 @@
+{
+    "os": "Linux-5.4.0-144-generic-x86_64-with-glibc2.31",
+    "python": "3.9.0",
+    "heartbeatAt": "2023-11-03T21:02:51.025583",
+    "startedAt": "2023-11-03T21:02:50.497708",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "--config",
+        "configs/caltech101.yaml"
+    ],
+    "state": "running",
+    "program": "/home/jingchen/tip-adapter/main.py",
+    "codePathLocal": "main.py",
+    "codePath": "main.py",
+    "git": {
+        "remote": "git@github.com:Jingchensun/Tip-Adapter.git",
+        "commit": "d7c44f7df1ba989b6733108bcd73cc7c2f49b271"
+    },
+    "email": "15611567799@163.com",
+    "root": "/home/jingchen/tip-adapter",
+    "host": "A6000",
+    "username": "jingchen",
+    "executable": "/home/jingchen/miniconda3/envs/coop/bin/python",
+    "cpu_count": 12,
+    "cpu_count_logical": 24,
+    "cpu_freq": {
+        "current": 4190.135416666668,
+        "min": 1200.0,
+        "max": 4650.0
+    },
+    "cpu_freq_per_core": [
+        {
+            "current": 4091.209,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4196.467,
+            "min": 1200.0,
+            "max": 4800.0
+        },
+        {
+            "current": 4299.997,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4269.505,
+            "min": 1200.0,
+            "max": 4800.0
+        },
+        {
+            "current": 4164.38,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4300.0,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4112.281,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4299.999,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4233.608,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4058.862,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 4091.564,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4300.0,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 4121.635,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4166.964,
+            "min": 1200.0,
+            "max": 4800.0
+        },
+        {
+            "current": 4300.002,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4274.251,
+            "min": 1200.0,
+            "max": 4800.0
+        },
+        {
+            "current": 4300.407,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4299.986,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4270.084,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4299.887,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4299.95,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 3308.497,
+            "min": 1200.0,
+            "max": 4700.0
+        },
+        {
+            "current": 4203.706,
+            "min": 1200.0,
+            "max": 4600.0
+        },
+        {
+            "current": 4300.009,
+            "min": 1200.0,
+            "max": 4700.0
+        }
+    ],
+    "disk": {
+        "/": {
+            "total": 1865.8815574645996,
+            "used": 1394.0664405822754
+        }
+    },
+    "gpu": "NVIDIA RTX A6000",
+    "gpu_count": 4,
+    "gpu_devices": [
+        {
+            "name": "NVIDIA RTX A6000",
+            "memory_total": 51527024640
+        },
+        {
+            "name": "NVIDIA RTX A6000",
+            "memory_total": 51527024640
+        },
+        {
+            "name": "NVIDIA RTX A6000",
+            "memory_total": 51527024640
+        },
+        {
+            "name": "NVIDIA RTX A6000",
+            "memory_total": 51527024640
+        }
+    ],
+    "memory": {
+        "total": 251.40595626831055
+    }
+}
