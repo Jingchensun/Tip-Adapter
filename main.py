@@ -191,24 +191,30 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
                 text_features = clip_model.encode_text(text)
                 text_features /= text_features.norm(dim=-1, keepdim=True)
             affinity =model(image_features)
-            clip_logits = 100. * torch.exp(affinity @ text_features.t())
-            # print("clip_logits:", clip_logits)
+            clip_logits =  100. * torch.exp(affinity @ text_features.t())
+            print("clip_logits:", clip_logits)
             groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
             # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
             # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values # cache_values torch.Size([1616, 101])
             clip_logits2 = 100. * torch.exp(affinity @ clip_weights)
             # tip_logits = clip_logits + cache_logits * alpha
-            # print("tip_logits:", tip_logits.size())
+            print("clip_logits2:", clip_logits2)
             # print("cache_logits:", cache_logits.size())
-
+            weights = torch.ones(len(images), len(images)).cuda()
+            for i in range(2):
+                U = sample_u(weights, clip_logits)
+                weights = sample_w(U, clip_logits)
+            print("weights:", weights)
+            clip_logits = weights*clip_logits 
+            print("clip_logits:", clip_logits)
             loss1 = F.cross_entropy(clip_logits, groundtruth)
             loss2 = F.cross_entropy(clip_logits.T, groundtruth)
             loss12 = (loss1 + loss2)/2
             loss3 = F.cross_entropy(clip_logits2, target)
-            loss = loss12 + loss3
+            loss = loss12 + loss3*0.25
 
             tip_logits = 100. * torch.exp(affinity @ clip_weights)
-            # print("tip_logits:", tip_logits)
+            print("tip_logits:", tip_logits)
             acc = cls_acc(tip_logits, target)
             correct_samples += acc / 100 * len(tip_logits)
             all_samples += len(tip_logits)
@@ -219,7 +225,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             optimizer.step()
             scheduler.step()
 
-        wandb.log({"epoch": train_idx, "loss12": loss12,"loss3": loss3, "loss": loss,"train_accuracy": acc})
+        wandb.log({"epoch": train_idx, "loss1": loss1,"loss2": loss2,"loss3": loss3, "loss": loss,"train_accuracy": acc})
         current_lr = scheduler.get_last_lr()[0]
         print('LR: {:.6f}, Acc: {:.4f} ({:}/{:}), Loss: {:.4f}'.format(current_lr, correct_samples / all_samples, correct_samples, all_samples, sum(loss_list)/len(loss_list)))
 
