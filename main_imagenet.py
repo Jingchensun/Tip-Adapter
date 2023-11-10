@@ -31,12 +31,6 @@ import clip
 from utils import *
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
-a_u = 1
-b_u = 1
-a_minus = 10
-b_minus = 1
-a_plus = 5
-b_plus = 1
 
 
 def get_arguments():
@@ -79,102 +73,17 @@ class Adapter(nn.Module):
         return x
     
     
-# class TextEncoder(nn.Module):
 
-#     def __init__(self, cfg, classnames, clip_model):
-#         super().__init__()
-#         self.cfg = cfg
-#         self.classnames = classnames
-#         self.clip_model = clip_model
-#         self.dtype = clip_model.dtype
-    
-#     def forward(self):
-#         temp = CUSTOM_TEMPLATES[self.cfg.DATASET.NAME]
-#         prompts = [temp.format(c.replace('_', ' ')) for c in self.classnames]
-#         prompts = torch.cat([clip.tokenize(p) for p in prompts])
-#         prompts = prompts.to('cuda')
-#         text_features = self.clip_model.encode_text(prompts)
-#         x = text_features
-#         return x
-
-
-class CustomCLIP(nn.Module):
-
-    def __init__(self, clip_model):
-        super().__init__()
-        self.image_encoder = clip_model.encode_image
-        self.text_encoder = clip_model.encode_text
-        self.logit_scale = clip_model.logit_scale
-        self.dtype = clip_model.dtype
-        self.adapter = Adapter(512, 4).to(clip_model.dtype)
-
-            
-    def forward(self, image):
-        image_features = self.image_encoder(image.type(self.dtype))
-        x = self.adapter(image_features)
-
-        ratio = 0.2
-        # image_features = ratio * x + (1 - ratio) * image_features
-        image_features = x
-
-        text_features = self.text_encoder()
-
-        image_features = image_features / image_features.norm(dim=-1, keepdim=True)
-        text_features = text_features / text_features.norm(dim=-1, keepdim=True)
-
-        logit_scale = self.logit_scale.exp()
-        logits = logit_scale * image_features @ text_features.t()
-
-        return logits
-
-def sample_w(U, s_matrix):
-    BS = s_matrix.shape[0]
-    s_plus = s_matrix.masked_select(torch.eye(BS).bool().to(device))
-    s_minus = s_matrix.masked_select(~torch.eye(BS).bool().to(device))
-
-    w_plus_dist = Gamma(torch.tensor(1+a_plus).float().to(device), U*s_plus + b_plus)
-    U = U.repeat_interleave(int(BS-1))
-    w_minus_dist = Gamma(torch.tensor(a_minus).float().to(device), U*s_minus + b_minus)
-
-    w_plus = w_plus_dist.sample()
-    w_minus = w_minus_dist.sample()
-
-    result = torch.zeros(BS, BS).to(device)
-    diagonal_matrix = torch.diag(w_plus)
-
-    result += diagonal_matrix
-    mask = ~torch.eye(BS, dtype=bool)  
-    result[mask] = w_minus
-    # print("w_matrix:", result)
-    return result
-
-def sample_u(w_matrix, sim_matrix):
-    full_mat = w_matrix * sim_matrix
-    rate_param = b_u + full_mat.sum(dim=1)
-    u_dist = Gamma(torch.tensor(a_u).float().to(device),\
-            rate_param.float())
-    # print(rate_param)
-    # print(u_dist.sample())
-    return u_dist.sample()
-
-def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels, clip_weights, clip_model, train_loader_F, template):
+def run_tip_adapter_F(cfg, test_features, test_labels, clip_weights, clip_model, train_loader_F, template):
     
 
-    # clip_model = load_clip_to_cpu(cfg)
-    # clip_model.float()
     model = Adapter(512, 4).to(clip_model.dtype)
-
-    # model = CustomCLIP(clip_model)
-    # for name, param in model.named_parameters():
-    #     if 'adapter' not in name:
-    #         param.requires_grad_(False)
     
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg['lr'], eps=1e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, cfg['train_epoch'] * len(train_loader_F))
 
-    beta, alpha = cfg['init_beta'], cfg['init_alpha']
     best_acc, best_epoch = 0.0, 0
-    cfg['train_epoch'] = 20
+    cfg['train_epoch'] = 1
     for train_idx in range(cfg['train_epoch']): #cfg['train_epoch']
         # Train
         model.train().cuda()
@@ -197,11 +106,11 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
                 text_features = clip_model.encode_text(text)
                 text_features /= text_features.norm(dim=-1, keepdim=True)
             affinity =model(image_features)
-            contras_logits = 10. * torch.exp(affinity @ text_features.t())
+            contras_logits = 100. * (affinity @ text_features.t())
             groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
             # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
             # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values # cache_values torch.Size([1616, 101])
-            clip_logits = 10. * torch.exp(affinity @ clip_weights)
+            clip_logits = 100. * (affinity @ clip_weights)
             # tip_logits = clip_logits + cache_logits * alpha
             # print("tip_logits:", tip_logits.size())
             # print("cache_logits:", cache_logits.size())
@@ -212,7 +121,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
             loss3 = F.cross_entropy(clip_logits, target)
             loss = loss12+loss3
             # print("loss:", loss)
-            tip_logits = 10. * torch.exp(affinity @ clip_weights)
+            tip_logits = 100. * (affinity @ clip_weights)
             # print("tip_logits:", tip_logits.size())
             # print("target:", target.size())
             acc = cls_acc(tip_logits, target)
@@ -232,11 +141,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
         model.eval()
 
         affinity = model(test_features)
-        # clip_logits = torch.exp(affinity @ text_features.t())
-        # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values
-        # clip_logits = 100. * test_features @ clip_weights
-        # tip_logits = clip_logits + cache_logits * alpha
-        tip_logits = 10. * torch.exp(affinity @ clip_weights)
+        tip_logits = 100. * (affinity @ clip_weights)
 
         acc = cls_acc(tip_logits, test_labels)
 
@@ -248,20 +153,6 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels,
 
     model = torch.load(cfg['cache_dir'] + "/best_F_" + str(cfg['shots']) + "shots.pt")
     print(f"**** After fine-tuning, Tip-Adapter-F's best test accuracy: {best_acc:.2f}, at epoch: {best_epoch}. ****\n")
-
-    # print("\n-------- Searching hyperparameters on the val set. --------")
-
-    # # Search Hyperparameters
-    # best_beta, best_alpha = search_hp(cfg, cache_keys, cache_values, val_features, val_labels, clip_weights, adapter=adapter)
-
-    # print("\n-------- Evaluating on the test set. --------")
-   
-    # affinity = adapter(test_features)
-    # cache_logits = ((-1) * (best_beta - best_beta * affinity)).exp() @ cache_values
-    
-    # tip_logits = clip_logits + cache_logits * best_alpha
-    # acc = cls_acc(tip_logits, test_labels)
-    # print("**** Tip-Adapter-F's test accuracy: {:.2f}. ****\n".format(max(best_acc, acc)))
 
     return best_acc
 
@@ -299,52 +190,20 @@ def main():
 
         test_loader = torch.utils.data.DataLoader(imagenet.test, batch_size=64, num_workers=8, shuffle=False)
 
-        train_loader_cache = torch.utils.data.DataLoader(imagenet.train, batch_size=256, num_workers=8, shuffle=False)
         train_loader_F = torch.utils.data.DataLoader(imagenet.train, batch_size=256, num_workers=8, shuffle=True)
 
         # Textual features
         print("Getting textual features as CLIP's classifier.")
         clip_weights = clip_classifier(imagenet.classnames, imagenet.template, clip_model)
 
-        # Construct the cache model by few-shot training set
-        print("\nConstructing cache model by few-shot visual features and labels.")
-        cache_keys, cache_values = build_cache_model(cfg, clip_model, train_loader_cache)
-
         # Pre-load test features
         print("\nLoading visual features and labels from test set.")
         test_features, test_labels = pre_load_features(cfg, "test", clip_model, test_loader)
-        # print("Preparing dataset.")
-        # dataset = build_dataset(cfg['dataset'], cfg['root_path'], cfg['shots'])
-
-        # test_loader = build_data_loader(dataset.template, data_source=dataset.test, batch_size=64, is_train=False, tfm=preprocess, shuffle=False)
-
-        # train_tranform = transforms.Compose([
-        #     transforms.RandomResizedCrop(size=224, scale=(0.5, 1), interpolation=transforms.InterpolationMode.BICUBIC),
-        #     transforms.RandomHorizontalFlip(p=0.5),
-        #     transforms.ToTensor(),
-        #     transforms.Normalize(mean=(0.48145466, 0.4578275, 0.40821073), std=(0.26862954, 0.26130258, 0.27577711))
-        # ])
-
-        # train_loader_cache = build_data_loader(dataset.template, data_source=dataset.train, batch_size=256, tfm=train_tranform, is_train=True, shuffle=False)
-        # train_loader_F = build_data_loader(dataset.template, data_source=dataset.train, batch_size=256, tfm=train_tranform, is_train=True, shuffle=True)
-        
-        # # Textual features
-        # print("\nGetting textual features as CLIP's classifier.")
-        # clip_weights = clip_classifier(dataset.classnames, dataset.template, clip_model)
-
-        # # Construct the cache model by few-shot training set
-        # print("\nConstructing cache model by few-shot visual features and labels.")
-        # cache_keys, cache_values = build_cache_model(cfg, clip_model, train_loader_cache)
-
-        # # Pre-load test features
-        # print("\nLoading visual features and labels from test set.")
-        # test_features, test_labels = pre_load_features(cfg, "test", clip_model, test_loader)
-
         # ------------------------------------------ Tip-Adapter ------------------------------------------
         # run_tip_adapter(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights)
 
         # ------------------------------------------ Tip-Adapter-F ------------------------------------------
-        best_acc=run_tip_adapter_F(cfg, cache_keys, cache_values, test_features, test_labels, clip_weights, clip_model, train_loader_F, imagenet.template)
+        best_acc=run_tip_adapter_F(cfg, test_features, test_labels, clip_weights, clip_model, train_loader_F, imagenet.template)
 
         origin_acc[("origin_acc"+str(seed))] = best_acc
     

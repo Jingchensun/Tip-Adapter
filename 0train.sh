@@ -1,4 +1,4 @@
-CUDA_VISIBLE_DEVICES=0 python main.py --config configs/oxford_pets.yaml
+CUDA_VISIBLE_DEVICES=1 python main.py --config configs/oxford_pets.yaml
 CUDA_VISIBLE_DEVICES=0 python main.py --config configs/fgvc.yaml
 CUDA_VISIBLE_DEVICES=0 python main.py --config configs/sun397.yaml
 
