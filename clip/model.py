@@ -193,6 +193,8 @@ class Transformer(nn.Module):
         super().__init__()
         self.width = width
         self.layers = layers
+        # print("layers:", layers) #12
+        # print("heads:", heads) #8
         self.resblocks = nn.Sequential(*[ResidualAttentionBlock(width, heads, attn_mask) for _ in range(layers)])
 
     def forward(self, x: torch.Tensor):
@@ -248,8 +250,8 @@ class CLIP(nn.Module):
                  context_length: int,
                  vocab_size: int,
                  transformer_width: int,
-                 transformer_heads: int,
-                 transformer_layers: int
+                 transformer_heads: int, #8
+                 transformer_layers: int #12
                  ):
         super().__init__()
 
@@ -337,17 +339,26 @@ class CLIP(nn.Module):
         return self.visual(image.type(self.dtype))
 
     def encode_text(self, text):
+        # print("text:", text.size()) #torch.Size([256, 77])
         x = self.token_embedding(text).type(self.dtype)  # [batch_size, n_ctx, d_model]
+        # print("x", x.size()) #torch.Size([256, 77, 512])
 
         x = x + self.positional_embedding.type(self.dtype)
+        # print("self.positional_embedding", self.positional_embedding.size()) #torch.Size([77, 512])
+        # print("x + positional", x.size()) #torch.Size([256, 77, 512])
         x = x.permute(1, 0, 2)  # NLD -> LND
+        # print("x permute", x.size()) #torch.Size([77, 256, 512])
         x = self.transformer(x)
+        # print("x transformer", x.size()) #torch.Size([77, 256, 512])
         x = x.permute(1, 0, 2)  # LND -> NLD
+        # print("x permute", x.size()) #torch.Size([256, 77, 512]
         x = self.ln_final(x).type(self.dtype)
+        # print("x ln_final", x.size()) #torch.Size([256, 77, 512])
 
         # x.shape = [batch_size, n_ctx, transformer.width]
         # take features from the eot embedding (eot_token is the highest number in each sequence)
         x = x[torch.arange(x.shape[0]), text.argmax(dim=-1)] @ self.text_projection
+        # print("x @ self.text_projection", x.size()) #torch.Size([256, 512])
 
         return x
 

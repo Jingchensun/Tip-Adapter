@@ -26,9 +26,9 @@ from timm.data.random_erasing import RandomErasing
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 a_u = 1
 b_u = 1
-a_minus = 10
+a_minus = 5
 b_minus = 1
-a_plus = 5
+a_plus = 10
 b_plus = 1
 
 
@@ -192,19 +192,19 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
                 text_features /= text_features.norm(dim=-1, keepdim=True)
             affinity =model(image_features)
             clip_logits =  100. * torch.exp(affinity @ text_features.t())
-            print("clip_logits:", clip_logits)
+            # print("clip_logits:", clip_logits)
             groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
             # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
             # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values # cache_values torch.Size([1616, 101])
             clip_logits2 = 100. * torch.exp(affinity @ clip_weights)
             # tip_logits = clip_logits + cache_logits * alpha
-            print("clip_logits2:", clip_logits2)
+            # print("clip_logits2:", clip_logits2)
             # print("cache_logits:", cache_logits.size())
             weights = torch.ones(len(images), len(images)).cuda()
             for i in range(2):
                 U = sample_u(weights, clip_logits)
                 weights = sample_w(U, clip_logits)
-            print("weights:", weights)
+            # print("weights:", weights)
 
             weight_logit = weights*clip_logits
             pos_sim = weight_logit.masked_select(torch.eye(len(images)).bool().to(device))
@@ -221,11 +221,11 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
 
 
             loss3 = F.cross_entropy(clip_logits2, target)
-            loss = loss12 + loss3
+            loss = loss12*0.5 + loss3
 
 
             tip_logits = 100. * torch.exp(affinity @ clip_weights)
-            print("tip_logits:", tip_logits)
+            # print("tip_logits:", tip_logits)
             acc = cls_acc(tip_logits, target)
             correct_samples += acc / 100 * len(tip_logits)
             all_samples += len(tip_logits)
@@ -384,7 +384,7 @@ def main():
     values = list(origin_acc.values())
     mean = sum(values) / len(values)
     origin_acc["mean"] = mean
-    origin_acc["task"] = "loss=contrastive+crossentropy-scale100-RenyiCL augmentation"
+    origin_acc["task"] = "loss=contrastive+crossentropy-scale100-a+10a-5"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:
