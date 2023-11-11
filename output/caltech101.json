@@ -1,47 +1,15 @@
 {
-    "origin_acc0": 96.3894523326572,
-    "origin_acc1": 96.3894523326572,
-    "origin_acc2": 96.1866125760649,
-    "mean": 96.32183908045977
+    "origin_acc0": 95.61866125760649,
+    "origin_acc1": 95.25354969574036,
+    "origin_acc2": 96.22718052738337,
+    "mean": 95.7,
+    "var": 0.161,
+    "task": "CLIP-Adapter, Crossentropy -D1"
 }{
-    "origin_acc0": 94.07707910750507,
-    "origin_acc1": 94.2393509127789,
-    "origin_acc2": 94.07707910750507,
-    "mean": 94.13116970926302
-}{
-    "origin_acc0": 96.02434077079107,
-    "origin_acc1": 95.17241379310344,
-    "origin_acc2": 95.98377281947262,
-    "mean": 95.72684246112237,
-    "task": "loss=contrastive+crossentropy"
-}{
-    "origin_acc0": 95.25354969574036,
-    "origin_acc1": 95.131845841785,
-    "origin_acc2": 95.49695740365111,
-    "mean": 95.29411764705883,
-    "task": "loss=contrastive+crossentropy-scale100"
-}{
-    "origin_acc0": 95.01014198782961,
-    "origin_acc1": 95.37525354969574,
-    "origin_acc2": 95.6997971602434,
-    "mean": 95.36173089925626,
-    "task": "loss=contrastive+crossentropy-scale100-more augmentation"
-}{
-    "origin_acc0": 95.49695740365111,
-    "origin_acc1": 94.60446247464503,
-    "origin_acc2": 95.131845841785,
-    "mean": 95.07775524002705,
-    "task": "loss=contrastive+crossentropy-scale100-RenyiCL augmentation"
-}{
-    "origin_acc0": 93.99594320486815,
-    "origin_acc1": 93.95537525354969,
-    "origin_acc2": 95.05070993914808,
-    "mean": 94.33400946585532,
-    "task": "loss=contrastive+crossentropy-scale100-RenyiCL augmentation"
-}{
-    "origin_acc0": 94.32048681541582,
-    "origin_acc1": 94.0365111561866,
-    "origin_acc2": 95.131845841785,
-    "mean": 94.49628127112913,
-    "task": "loss=contrastive+crossentropy-scale100-a+10a-5"
+    "origin_acc0": 96.51115618661258,
+    "origin_acc1": 95.78093306288032,
+    "origin_acc2": 96.22718052738337,
+    "mean": 96.173,
+    "var": 0.09,
+    "task": "CLIP-Adapter, Crossentropy -D1-ratio"
 }

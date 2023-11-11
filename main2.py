@@ -70,7 +70,7 @@ class Adapter(nn.Module):
 
 def run_tip_adapter_F(cfg, test_features, test_labels, clip_weights, clip_model, train_loader_F, template):
     
-    model = Adapter(512, 4).to(clip_model.dtype)
+    model = Adapter(512, 1).to(clip_model.dtype)
     
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg['lr'], eps=1e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, cfg['train_epoch'] * len(train_loader_F))
@@ -99,13 +99,13 @@ def run_tip_adapter_F(cfg, test_features, test_labels, clip_weights, clip_model,
                 text_features = clip_model.encode_text(text)
                 text_features /= text_features.norm(dim=-1, keepdim=True)
             affinity =model(image_features)
-            # affinity2 = 0.2 * affinity + 0.8 * image_features
+            affinity2 = 0.2 * affinity + 0.8 * image_features
             contras_logits =  100. * (image_features @ text_features.t())
             # print("clip_logits:", clip_logits)
             groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
             # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
             # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values # cache_values torch.Size([1616, 101])
-            cross_logits = 100. * (affinity @ clip_weights)
+            cross_logits = 100. * (affinity2 @ clip_weights)
 
             loss1 = F.cross_entropy(contras_logits, groundtruth)
             loss2 = F.cross_entropy(contras_logits.T, groundtruth)
@@ -113,10 +113,10 @@ def run_tip_adapter_F(cfg, test_features, test_labels, clip_weights, clip_model,
 
 
             loss3 = F.cross_entropy(cross_logits, target)
-            loss = loss3 + loss12
+            loss = loss3
 
 
-            tip_logits = 100. * (affinity @ clip_weights)
+            tip_logits = 100. * (affinity2 @ clip_weights)
             # print("tip_logits:", tip_logits)
             acc = cls_acc(tip_logits, target)
             correct_samples += acc / 100 * len(tip_logits)
@@ -128,15 +128,15 @@ def run_tip_adapter_F(cfg, test_features, test_labels, clip_weights, clip_model,
             optimizer.step()
             scheduler.step()
 
-        # wandb.log({"epoch": train_idx, "loss12": loss12, "loss3": loss3, "loss": loss,"train_accuracy": acc})
+        wandb.log({"epoch": train_idx, "loss12": loss12, "loss3": loss3, "loss": loss,"train_accuracy": acc})
         current_lr = scheduler.get_last_lr()[0]
         print('LR: {:.6f}, Acc: {:.4f} ({:}/{:}), Loss: {:.4f}'.format(current_lr, correct_samples / all_samples, correct_samples, all_samples, sum(loss_list)/len(loss_list)))
 
         # Eval
         model.eval()
         affinity = model(test_features)
-        # affinity2 = 0.2 * affinity + 0.8 * test_features
-        tip_logits = 100. * (affinity @ clip_weights)
+        affinity2 = 0.2 * affinity + 0.8 * test_features
+        tip_logits = 100. * (affinity2 @ clip_weights)
 
         acc = cls_acc(tip_logits, test_labels)
 
@@ -145,7 +145,7 @@ def run_tip_adapter_F(cfg, test_features, test_labels, clip_weights, clip_model,
             best_acc = acc
             best_epoch = train_idx
             torch.save(model, cfg['cache_dir'] + "/best_F_" + str(cfg['shots']) + "shots.pt")
-    # wandb.finish()
+    wandb.finish()
     model = torch.load(cfg['cache_dir'] + "/best_F_" + str(cfg['shots']) + "shots.pt")
     print(f"**** After fine-tuning, Tip-Adapter-F's best test accuracy: {best_acc:.2f}, at epoch: {best_epoch}. ****\n")
 
@@ -176,8 +176,8 @@ def main():
     # Prepare dataset
     origin_acc = {}
     for seed in range(3):
-        # wandb.init(project=("tip-adapter"), entity="jingchensun")
-        # wandb.run.name = str(cfg['dataset']) + 'seed-'+str(seed)
+        wandb.init(project=("tip-adapter"), entity="jingchensun")
+        wandb.run.name = str(cfg['dataset']) + 'seed-'+str(seed)
         random.seed(seed)
         torch.manual_seed(seed)
         print("Seed=", seed)
@@ -191,8 +191,8 @@ def main():
         train_tranform = transforms.Compose([
             transforms.RandomResizedCrop(size=224, scale=(0.5, 1), interpolation=transforms.InterpolationMode.BICUBIC),
             transforms.RandomHorizontalFlip(p=0.5),
-            # transforms.RandomApply([transforms.ColorJitter(0.4, 0.4, 0.4, 0.1)], p=0.8),
-            # transforms.RandomGrayscale(p=0.2),
+            transforms.RandomApply([transforms.ColorJitter(0.4, 0.4, 0.4, 0.1)], p=0.8),
+            transforms.RandomGrayscale(p=0.2),
             transforms.ToTensor(),
             transforms.Normalize(mean=(0.48145466, 0.4578275, 0.40821073), std=(0.26862954, 0.26130258, 0.27577711))
         ])
@@ -230,7 +230,7 @@ def main():
     variance_accuracy = round(np.var(values), 3)
     origin_acc["mean"] = mean_accuracy 
     origin_acc["var"] = variance_accuracy
-    origin_acc["task"] = "test:"
+    origin_acc["task"] = "CLIP-Adapter, Crossentropy -D1-ratio"
     with open(file_path, 'a',encoding='utf-8') as file:
         json.dump(origin_acc, file, indent=4, ensure_ascii=False)
            

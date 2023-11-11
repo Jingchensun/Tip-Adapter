@@ -1,46 +1,15 @@
 {
-    "origin_acc0": 93.32243118015808,
-    "origin_acc1": 93.0771327337149,
-    "origin_acc2": 92.55928045789044,
-    "mean": 92.98628145725446
+    "origin_acc0": 89.12510220768601,
+    "origin_acc1": 89.67020986644863,
+    "origin_acc2": 89.20686835650041,
+    "mean": 89.334,
+    "var": 0.058,
+    "task": "CLIP-Adapter, Crossentropy -D1"
 }{
-    "origin_acc0": 86.34505314799672,
-    "origin_acc1": 82.61106568547288,
-    "origin_acc2": 86.89016080675934,
-    "mean": 85.28209321340965
-}{
-    "origin_acc0": 87.89860997547015,
-    "origin_acc1": 87.2172254020169,
-    "origin_acc2": 88.44371763423275,
-    "mean": 87.85318433723994
-}{
-    "origin_acc0": 89.97001907876806,
-    "origin_acc1": 89.69746524938675,
-    "origin_acc2": 90.43336058871627,
-    "mean": 90.03361497229037,
-    "task": "loss=contrastive+crossentropy"
-}{
-    "origin_acc0": 90.16080675933497,
-    "origin_acc1": 89.53393295175798,
-    "origin_acc2": 89.9155083128918,
-    "mean": 89.87008267466159,
-    "task": "loss=contrastive+crossentropy-scale100"
-}{
-    "origin_acc0": 90.24257290814936,
-    "origin_acc1": 89.6429544835105,
-    "origin_acc2": 89.61569910057236,
-    "mean": 89.8337421640774,
-    "task": "loss=contrastive+crossentropy-scale100-more augmentation"
-}{
-    "origin_acc0": 88.98882529299537,
-    "origin_acc1": 89.97001907876806,
-    "origin_acc2": 88.7435268465522,
-    "mean": 89.23412373943854,
-    "task": "loss=contrastive+crossentropy-scale100-RenyiCL augmentation"
-}{
-    "origin_acc0": 88.6617606977378,
-    "origin_acc1": 88.90705914418098,
-    "origin_acc2": 89.09784682474789,
-    "mean": 88.8888888888889,
-    "task": "loss=contrastive+crossentropy-scale100-a+10a-5"
+    "origin_acc0": 92.6137912237667,
+    "origin_acc1": 92.75006813845735,
+    "origin_acc2": 92.0686835650041,
+    "mean": 92.478,
+    "var": 0.087,
+    "task": "CLIP-Adapter, Crossentropy -D1-ratio"
 }
