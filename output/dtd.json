@@ -12,4 +12,18 @@
     "mean": 71.789,
     "var": 0.189,
     "task": "CLIP-Adapter, Crossentropy -D1-ratio"
+}{
+    "origin_acc0": 71.63120567375887,
+    "origin_acc1": 70.74468085106383,
+    "origin_acc2": 71.45390070921985,
+    "mean": 71.277,
+    "var": 0.147,
+    "task": "CLIP-Adapter, Crossentropy -D1-contrastive"
+}{
+    "origin_acc0": 71.98581560283688,
+    "origin_acc1": 72.04491725768321,
+    "origin_acc2": 70.92198581560284,
+    "mean": 71.651,
+    "var": 0.266,
+    "task": "CLIP-Adapter, Crossentropy -D1-ratio-contrastive"
 }

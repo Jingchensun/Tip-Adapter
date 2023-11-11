@@ -30348,3 +30348,237 @@ Traceback (most recent call last):
   File "main4.py", line 179, in main
     wandb.init(project=("tip-adapter"), entity="jingchensun")
 AttributeError: module 'wandb' has no attribute 'init'
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [13, 13], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 2, 'dataset': 'dtd', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/dtd'} 
+
+Traceback (most recent call last):
+  File "main3.py", line 239, in <module>
+    main()
+  File "main3.py", line 179, in main
+    wandb.init(project=("tip-adapter"), entity="jingchensun")
+AttributeError: module 'wandb' has no attribute 'init'
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [30, 30], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 5, 'dataset': 'fgvc', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/fgvc'} 
+
+Traceback (most recent call last):
+  File "main4.py", line 239, in <module>
+    main()
+  File "main4.py", line 179, in main
+    wandb.init(project=("tip-adapter"), entity="jingchensun")
+AttributeError: module 'wandb' has no attribute 'init'
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [12, 10], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 2, 'dataset': 'eurosat', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 100, 'cache_dir': './caches/eurosat'} 
+
+Traceback (most recent call last):
+  File "main3.py", line 239, in <module>
+    main()
+  File "main3.py", line 179, in main
+    wandb.init(project=("tip-adapter"), entity="jingchensun")
+AttributeError: module 'wandb' has no attribute 'init'
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [13, 13], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 2, 'dataset': 'dtd', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/dtd'} 
+
+Traceback (most recent call last):
+  File "main4.py", line 239, in <module>
+    main()
+  File "main4.py", line 179, in main
+    wandb.init(project=("tip-adapter"), entity="jingchensun")
+AttributeError: module 'wandb' has no attribute 'init'
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [20, 10], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 3, 'dataset': 'stanford_cars', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/stanford_cars'} 
+
+Traceback (most recent call last):
+  File "main3.py", line 239, in <module>
+    main()
+  File "main3.py", line 179, in main
+    wandb.init(project=("tip-adapter"), entity="jingchensun")
+AttributeError: module 'wandb' has no attribute 'init'
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [12, 10], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 2, 'dataset': 'eurosat', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 100, 'cache_dir': './caches/eurosat'} 
+
+Traceback (most recent call last):
+  File "main4.py", line 239, in <module>
+    main()
+  File "main4.py", line 179, in main
+    wandb.init(project=("tip-adapter"), entity="jingchensun")
+AttributeError: module 'wandb' has no attribute 'init'
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [12, 10], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 1.17, 'dataset': 'sun397', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/sun397'} 
+
+Traceback (most recent call last):
+  File "main3.py", line 239, in <module>
+    main()
+  File "main3.py", line 179, in main
+    wandb.init(project=("tip-adapter"), entity="jingchensun")
+AttributeError: module 'wandb' has no attribute 'init'
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [20, 10], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 3, 'dataset': 'stanford_cars', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/stanford_cars'} 
+
+Traceback (most recent call last):
+  File "main4.py", line 239, in <module>
+    main()
+  File "main4.py", line 179, in main
+    wandb.init(project=("tip-adapter"), entity="jingchensun")
+AttributeError: module 'wandb' has no attribute 'init'
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [10, 10], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 1.17, 'dataset': 'food101', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/food101'} 
+
+Traceback (most recent call last):
+  File "main3.py", line 239, in <module>
+    main()
+  File "main3.py", line 179, in main
+    wandb.init(project=("tip-adapter"), entity="jingchensun")
+AttributeError: module 'wandb' has no attribute 'init'
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [12, 10], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 1.17, 'dataset': 'sun397', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/sun397'} 
+
+Traceback (most recent call last):
+  File "main4.py", line 239, in <module>
+    main()
+  File "main4.py", line 179, in main
+    wandb.init(project=("tip-adapter"), entity="jingchensun")
+AttributeError: module 'wandb' has no attribute 'init'
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [10, 10], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 1.17, 'dataset': 'food101', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/food101'} 
+
+Traceback (most recent call last):
+  File "main4.py", line 239, in <module>
+    main()
+  File "main4.py", line 173, in main
+    clip_model, preprocess = clip.load(cfg['backbone'], device=device)
+  File "/home/jingchen/tip-adapter/clip/clip.py", line 134, in load
+    model = build_model(state_dict or model.state_dict()).to(device)
+  File "/home/jingchen/tip-adapter/clip/model.py", line 441, in build_model
+    convert_weights(model)
+  File "/home/jingchen/tip-adapter/clip/model.py", line 403, in convert_weights
+    model.apply(_convert_weights_to_fp16)
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/torch/nn/modules/module.py", line 884, in apply
+    module.apply(fn)
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/torch/nn/modules/module.py", line 884, in apply
+    module.apply(fn)
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/torch/nn/modules/module.py", line 884, in apply
+    module.apply(fn)
+  [Previous line repeated 3 more times]
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/torch/nn/modules/module.py", line 885, in apply
+    fn(self)
+  File "/home/jingchen/tip-adapter/clip/model.py", line 387, in _convert_weights_to_fp16
+    l.weight.data = l.weight.data.half()
+KeyboardInterrupt
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [12, 5], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 3, 'dataset': 'caltech101', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/caltech101'} 
+
+Traceback (most recent call last):
+  File "main3.py", line 239, in <module>
+    main()
+  File "main3.py", line 179, in main
+    wandb.init(project=("tip-adapter"), entity="jingchensun")
+AttributeError: module 'wandb' has no attribute 'init'
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [7, 3], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 3, 'dataset': 'ucf101', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/ucf101'} 
+
+Traceback (most recent call last):
+  File "main3.py", line 239, in <module>
+    main()
+  File "main3.py", line 179, in main
+    wandb.init(project=("tip-adapter"), entity="jingchensun")
+AttributeError: module 'wandb' has no attribute 'init'
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [7, 3], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 1.17, 'dataset': 'oxford_pets', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/oxford_pets'} 
+
+Traceback (most recent call last):
+  File "main4.py", line 239, in <module>
+    main()
+  File "main4.py", line 179, in main
+    wandb.init(project=("tip-adapter"), entity="jingchensun")
+AttributeError: module 'wandb' has no attribute 'init'
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [50, 50], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 10, 'dataset': 'oxford_flowers', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/oxford_flowers'} 
+
+Traceback (most recent call last):
+  File "main3.py", line 239, in <module>
+    main()
+  File "main3.py", line 179, in main
+    wandb.init(project=("tip-adapter"), entity="jingchensun")
+AttributeError: module 'wandb' has no attribute 'init'
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [30, 30], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 5, 'dataset': 'fgvc', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/fgvc'} 
+
+Traceback (most recent call last):
+  File "main4.py", line 239, in <module>
+    main()
+  File "main4.py", line 179, in main
+    wandb.init(project=("tip-adapter"), entity="jingchensun")
+AttributeError: module 'wandb' has no attribute 'init'
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [13, 13], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 2, 'dataset': 'dtd', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/dtd'} 
+
+Traceback (most recent call last):
+  File "main4.py", line 239, in <module>
+    main()
+  File "main4.py", line 179, in main
+    wandb.init(project=("tip-adapter"), entity="jingchensun")
+AttributeError: module 'wandb' has no attribute 'init'
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [12, 10], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 2, 'dataset': 'eurosat', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 100, 'cache_dir': './caches/eurosat'} 
+
+Traceback (most recent call last):
+  File "main4.py", line 239, in <module>
+    main()
+  File "main4.py", line 173, in main
+    clip_model, preprocess = clip.load(cfg['backbone'], device=device)
+  File "/home/jingchen/tip-adapter/clip/clip.py", line 116, in load
+    model_path = _download(_MODELS[name], download_root or os.path.expanduser("~/.cache/clip"))
+  File "/home/jingchen/tip-adapter/clip/clip.py", line 50, in _download
+    if hashlib.sha256(open(download_target, "rb").read()).hexdigest() == expected_sha256:
+KeyboardInterrupt
+
+Running configs.
+{'root_path': '', 'load_cache': False, 'load_pre_feat': False, 'search_hp': True, 'search_scale': [7, 3], 'search_step': [200, 20], 'init_beta': 1, 'init_alpha': 1.17, 'dataset': 'imagenet', 'shots': 16, 'backbone': 'ViT-B/16', 'lr': 0.001, 'augment_epoch': 10, 'train_epoch': 20, 'cache_dir': './caches/imagenet'} 
+
+Seed= 0
+Preparing ImageNet dataset.
+Getting textual features as CLIP's classifier.
+Traceback (most recent call last):
+  File "main_imagenet3.py", line 221, in <module>
+    main()
+  File "main_imagenet3.py", line 196, in main
+    clip_weights = clip_classifier(imagenet.classnames, imagenet.template, clip_model)
+  File "/home/jingchen/tip-adapter/utils.py", line 28, in clip_classifier
+    class_embeddings = clip_model.encode_text(texts)
+  File "/home/jingchen/tip-adapter/clip/model.py", line 351, in encode_text
+    x = self.transformer(x)
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/jingchen/tip-adapter/clip/model.py", line 201, in forward
+    return self.resblocks(x)
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/torch/nn/modules/container.py", line 217, in forward
+    input = module(input)
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/jingchen/tip-adapter/clip/model.py", line 186, in forward
+    x = x + self.attention(self.ln_1(x))
+  File "/home/jingchen/miniconda3/envs/torch200/lib/python3.8/site-packages/torch/nn/modules/module.py", line 1501, in _call_impl
+    return forward_call(*args, **kwargs)
+  File "/home/jingchen/tip-adapter/clip/model.py", line 158, in forward
+    ret = super().forward(x.type(torch.float32))
+KeyboardInterrupt
