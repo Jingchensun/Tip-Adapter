@@ -1,29 +1,43 @@
 {
-    "origin_acc0": 82.27160493827161,
-    "origin_acc1": 85.23456790123457,
-    "origin_acc2": 83.17283950617283,
-    "mean": 83.56,
-    "var": 1.538,
-    "task": "CLIP-Adapter, Crossentropy -D1"
+    "origin_acc0": 57.407407407407405,
+    "origin_acc1": 70.08641975308642,
+    "origin_acc2": 57.41975308641975,
+    "mean": 61.638,
+    "var": 35.689,
+    "task": "CLIP-Adapter, Crossentropy -D1024"
 }{
-    "origin_acc0": 84.58024691358025,
-    "origin_acc1": 87.28395061728395,
-    "origin_acc2": 84.58024691358025,
-    "mean": 85.481,
-    "var": 1.624,
-    "task": "CLIP-Adapter, Crossentropy -D1-ratio"
+    "origin_acc0": 75.64197530864197,
+    "origin_acc1": 79.69135802469135,
+    "origin_acc2": 71.79012345679013,
+    "mean": 75.708,
+    "var": 10.407,
+    "task": "CLIP-Adapter, Crossentropy -D1024-contrastive-alpha"
 }{
-    "origin_acc0": 84.82716049382717,
-    "origin_acc1": 87.8395061728395,
-    "origin_acc2": 85.41975308641975,
-    "mean": 86.029,
-    "var": 1.698,
-    "task": "CLIP-Adapter, Crossentropy -D1-ratio-contrastive"
+    "origin_acc0": 63.876543209876544,
+    "origin_acc1": 75.69135802469135,
+    "origin_acc2": 72.37037037037037,
+    "mean": 70.646,
+    "var": 24.752,
+    "task": "CLIP-Adapter, Crossentropy -D1024-contrastive"
 }{
-    "origin_acc0": 83.91358024691358,
-    "origin_acc1": 87.09876543209876,
-    "origin_acc2": 85.0246913580247,
-    "mean": 85.346,
-    "var": 1.742,
-    "task": "CLIP-Adapter, Crossentropy -D1-contrastive"
+    "origin_acc0": 78.98765432098766,
+    "origin_acc1": 77.23456790123457,
+    "origin_acc2": 74.90123456790124,
+    "mean": 77.041,
+    "var": 2.802,
+    "task": "CLIP-Adapter, Crossentropy -D1024-ratio-contrastive"
+}{
+    "origin_acc0": 75.8641975308642,
+    "origin_acc1": 78.64197530864197,
+    "origin_acc2": 75.81481481481481,
+    "mean": 76.774,
+    "var": 1.746,
+    "task": "CLIP-Adapter, Crossentropy -D1024-ratio-contrastive-alpha"
+}{
+    "origin_acc0": 77.87654320987654,
+    "origin_acc1": 75.54320987654322,
+    "origin_acc2": 75.12345679012346,
+    "mean": 76.181,
+    "var": 1.467,
+    "task": "CLIP-Adapter, Crossentropy -D1024-ratio"
 }

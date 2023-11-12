@@ -212,7 +212,7 @@ def main():
     variance_accuracy = round(np.var(values), 3)
     origin_acc["mean"] = mean_accuracy 
     origin_acc["var"] = variance_accuracy
-    origin_acc["task"] = "CLIP-Adapter, Crossentropy -D1"
+    origin_acc["task"] = "CLIP-Adapter, Crossentropy -D4"
     with open(file_path, 'a',encoding='utf-8') as file:
         json.dump(origin_acc, file, indent=4, ensure_ascii=False)
            

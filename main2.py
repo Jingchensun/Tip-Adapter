@@ -54,12 +54,12 @@ def load_clip_to_cpu(cfg):
     return model
 
 class Adapter(nn.Module):
-    def __init__(self, c_in, reduction=4):
+    def __init__(self, c_in, c_out):
         super(Adapter, self).__init__()
         self.fc = nn.Sequential(
-            nn.Linear(c_in, c_in // reduction, bias=False),
+            nn.Linear(c_in, c_out, bias=False),
             nn.ReLU(inplace=True),
-            nn.Linear(c_in // reduction, c_in, bias=False),
+            nn.Linear(c_out, c_in, bias=False),
             nn.ReLU(inplace=True)
         )
 
@@ -70,14 +70,14 @@ class Adapter(nn.Module):
 
 def run_tip_adapter_F(cfg, test_features, test_labels, clip_weights, clip_model, train_loader_F, template):
     
-    model = Adapter(512, 1).to(clip_model.dtype)
+    model = Adapter(512, 1024).to(clip_model.dtype)
     
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg['lr'], eps=1e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, cfg['train_epoch'] * len(train_loader_F))
 
     # wandb.config.train_epochs = 100
     best_acc, best_epoch = 0.0, 0
-    cfg['train_epoch'] = 100
+    cfg['train_epoch'] = 20
     for train_idx in range(cfg['train_epoch']): #cfg['train_epoch']
         # Train
         model.train().cuda()
@@ -228,7 +228,7 @@ def main():
     variance_accuracy = round(np.var(values), 3)
     origin_acc["mean"] = mean_accuracy 
     origin_acc["var"] = variance_accuracy
-    origin_acc["task"] = "CLIP-Adapter, Crossentropy -D1-ratio"
+    origin_acc["task"] = "CLIP-Adapter, Crossentropy -D1024-ratio"
     with open(file_path, 'a',encoding='utf-8') as file:
         json.dump(origin_acc, file, indent=4, ensure_ascii=False)
            

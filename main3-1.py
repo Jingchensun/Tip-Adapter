@@ -15,14 +15,17 @@ import clip
 from utils import *
 from torch.distributions.gamma import Gamma
 import json
+import wandb
+import numpy as np
+
+import renyicl.builder
+import renyicl.loader
+import renyicl.optimizer
+from timm.data.auto_augment import rand_augment_transform
+from timm.data.random_erasing import RandomErasing
 
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
-a_u = 1
-b_u = 1
-a_minus = 10
-b_minus = 1
-a_plus = 5
-b_plus = 1
+
 
 
 def get_arguments():
@@ -51,116 +54,32 @@ def load_clip_to_cpu(cfg):
     return model
 
 class Adapter(nn.Module):
-    def __init__(self, c_in, reduction=4):
+    def __init__(self, c_in, c_out):
         super(Adapter, self).__init__()
         self.fc = nn.Sequential(
-            nn.Linear(c_in, c_in // reduction, bias=False),
+            nn.Linear(c_in, c_out, bias=False),
             nn.ReLU(inplace=True),
-            nn.Linear(c_in // reduction, c_in, bias=False),
+            nn.Linear(c_out, c_in, bias=False),
             nn.ReLU(inplace=True)
         )
+        # self.alpha = torch.tensor(4, requires_grad=True, dtype=torch.float, device=device)
+        self.alpha = nn.Parameter(torch.tensor(4.0)) 
 
     def forward(self, x):
         x = self.fc(x)
         return x
+
+
+def run_tip_adapter_F(cfg, test_features, test_labels, clip_weights, clip_model, train_loader_F, template):
     
-    
-# class TextEncoder(nn.Module):
-
-#     def __init__(self, cfg, classnames, clip_model):
-#         super().__init__()
-#         self.cfg = cfg
-#         self.classnames = classnames
-#         self.clip_model = clip_model
-#         self.dtype = clip_model.dtype
-    
-#     def forward(self):
-#         temp = CUSTOM_TEMPLATES[self.cfg.DATASET.NAME]
-#         prompts = [temp.format(c.replace('_', ' ')) for c in self.classnames]
-#         prompts = torch.cat([clip.tokenize(p) for p in prompts])
-#         prompts = prompts.to('cuda')
-#         text_features = self.clip_model.encode_text(prompts)
-#         x = text_features
-#         return x
-
-
-class CustomCLIP(nn.Module):
-
-    def __init__(self, clip_model):
-        super().__init__()
-        self.image_encoder = clip_model.encode_image
-        self.text_encoder = clip_model.encode_text
-        self.logit_scale = clip_model.logit_scale
-        self.dtype = clip_model.dtype
-        self.adapter = Adapter(512, 4).to(clip_model.dtype)
-
-            
-    def forward(self, image):
-        image_features = self.image_encoder(image.type(self.dtype))
-        x = self.adapter(image_features)
-
-        ratio = 0.2
-        # image_features = ratio * x + (1 - ratio) * image_features
-        image_features = x
-
-        text_features = self.text_encoder()
-
-        image_features = image_features / image_features.norm(dim=-1, keepdim=True)
-        text_features = text_features / text_features.norm(dim=-1, keepdim=True)
-
-        logit_scale = self.logit_scale.exp()
-        logits = logit_scale * image_features @ text_features.t()
-
-        return logits
-
-def sample_w(U, s_matrix):
-    BS = s_matrix.shape[0]
-    s_plus = s_matrix.masked_select(torch.eye(BS).bool().to(device))
-    s_minus = s_matrix.masked_select(~torch.eye(BS).bool().to(device))
-
-    w_plus_dist = Gamma(torch.tensor(1+a_plus).float().to(device), U*s_plus + b_plus)
-    U = U.repeat_interleave(int(BS-1))
-    w_minus_dist = Gamma(torch.tensor(a_minus).float().to(device), U*s_minus + b_minus)
-
-    w_plus = w_plus_dist.sample()
-    w_minus = w_minus_dist.sample()
-
-    result = torch.zeros(BS, BS).to(device)
-    diagonal_matrix = torch.diag(w_plus)
-
-    result += diagonal_matrix
-    mask = ~torch.eye(BS, dtype=bool)  
-    result[mask] = w_minus
-    # print("w_matrix:", result)
-    return result
-
-def sample_u(w_matrix, sim_matrix):
-    full_mat = w_matrix * sim_matrix
-    rate_param = b_u + full_mat.sum(dim=1)
-    u_dist = Gamma(torch.tensor(a_u).float().to(device),\
-            rate_param.float())
-    # print(rate_param)
-    # print(u_dist.sample())
-    return u_dist.sample()
-
-def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights, clip_model, train_loader_F, template):
-    
-
-    # clip_model = load_clip_to_cpu(cfg)
-    # clip_model.float()
-    model = Adapter(512, 4).to(clip_model.dtype)
-
-    # model = CustomCLIP(clip_model)
-    # for name, param in model.named_parameters():
-    #     if 'adapter' not in name:
-    #         param.requires_grad_(False)
+    model = Adapter(512, 1024).to(clip_model.dtype)
     
     optimizer = torch.optim.AdamW(model.parameters(), lr=cfg['lr'], eps=1e-4)
     scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, cfg['train_epoch'] * len(train_loader_F))
 
-    beta, alpha = cfg['init_beta'], cfg['init_alpha']
+    # wandb.config.train_epochs = 100
     best_acc, best_epoch = 0.0, 0
-    cfg['train_epoch'] = 100
+    cfg['train_epoch'] = 20
     for train_idx in range(cfg['train_epoch']): #cfg['train_epoch']
         # Train
         model.train().cuda()
@@ -182,23 +101,26 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
                 text_features = clip_model.encode_text(text)
                 text_features /= text_features.norm(dim=-1, keepdim=True)
             affinity =model(image_features)
-            clip_logits = 10. * torch.exp(affinity @ text_features.t())
+            # affinity2 = 0.2 * affinity + 0.8 * image_features
+            contras_logits =  100. * (affinity  @ text_features.t())
             # print("clip_logits:", clip_logits)
             groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
             # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
             # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values # cache_values torch.Size([1616, 101])
-            clip_logits2 = 10. * torch.exp(affinity @ clip_weights)
-            # tip_logits = clip_logits + cache_logits * alpha
-            # print("tip_logits:", tip_logits.size())
-            # print("cache_logits:", cache_logits.size())
+            cross_logits = 100. * (affinity @ clip_weights)
+            # cross_logits = (torch.exp(model.alpha)*affinity.float() @ clip_weights.float())
 
-            loss1 = F.cross_entropy(clip_logits, groundtruth)
-            loss2 = F.cross_entropy(clip_logits.T, groundtruth)
+            loss1 = F.cross_entropy(contras_logits, groundtruth)
+            loss2 = F.cross_entropy(contras_logits.T, groundtruth)
             loss12 = (loss1 + loss2)/2
-            loss3 = F.cross_entropy(clip_logits2, target)
-            loss = loss12 + loss3
 
-            tip_logits = 10. * torch.exp(affinity @ clip_weights)
+
+            loss3 = F.cross_entropy(cross_logits, target)
+            loss = loss3 + loss12
+
+
+            # tip_logits = 100. * (affinity @ clip_weights)
+            tip_logits = cross_logits
             # print("tip_logits:", tip_logits)
             acc = cls_acc(tip_logits, target)
             correct_samples += acc / 100 * len(tip_logits)
@@ -210,18 +132,17 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             optimizer.step()
             scheduler.step()
 
+        wandb.log({"epoch": train_idx, "loss12": loss12, "loss3": loss3, "loss": loss,"train_accuracy": acc})
         current_lr = scheduler.get_last_lr()[0]
         print('LR: {:.6f}, Acc: {:.4f} ({:}/{:}), Loss: {:.4f}'.format(current_lr, correct_samples / all_samples, correct_samples, all_samples, sum(loss_list)/len(loss_list)))
 
         # Eval
         model.eval()
-
         affinity = model(test_features)
-        # clip_logits = torch.exp(affinity @ text_features.t())
-        # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values
-        # clip_logits = 100. * test_features @ clip_weights
-        # tip_logits = clip_logits + cache_logits * alpha
-        tip_logits = 10. * torch.exp(affinity @ clip_weights)
+        # affinity2 = 0.2 * affinity + 0.8 * test_features
+        # cross_logits = (torch.exp(model.alpha)*affinity.float() @ clip_weights.float())
+        tip_logits = 100. * (affinity @ clip_weights)
+        # tip_logits = cross_logits
 
         acc = cls_acc(tip_logits, test_labels)
 
@@ -230,23 +151,10 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             best_acc = acc
             best_epoch = train_idx
             torch.save(model, cfg['cache_dir'] + "/best_F_" + str(cfg['shots']) + "shots.pt")
-
+    wandb.finish()
     model = torch.load(cfg['cache_dir'] + "/best_F_" + str(cfg['shots']) + "shots.pt")
     print(f"**** After fine-tuning, Tip-Adapter-F's best test accuracy: {best_acc:.2f}, at epoch: {best_epoch}. ****\n")
 
-    # print("\n-------- Searching hyperparameters on the val set. --------")
-
-    # # Search Hyperparameters
-    # best_beta, best_alpha = search_hp(cfg, cache_keys, cache_values, val_features, val_labels, clip_weights, adapter=adapter)
-
-    # print("\n-------- Evaluating on the test set. --------")
-   
-    # affinity = adapter(test_features)
-    # cache_logits = ((-1) * (best_beta - best_beta * affinity)).exp() @ cache_values
-    
-    # tip_logits = clip_logits + cache_logits * best_alpha
-    # acc = cls_acc(tip_logits, test_labels)
-    # print("**** Tip-Adapter-F's test accuracy: {:.2f}. ****\n".format(max(best_acc, acc)))
 
     return best_acc
 
@@ -274,6 +182,8 @@ def main():
     # Prepare dataset
     origin_acc = {}
     for seed in range(3):
+        wandb.init(project=("tip-adapter"), entity="jingchensun")
+        wandb.run.name = str(cfg['dataset']) + 'seed-'+str(seed)
         random.seed(seed)
         torch.manual_seed(seed)
         print("Seed=", seed)
@@ -314,17 +224,17 @@ def main():
         # run_tip_adapter(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights)
 
         # ------------------------------------------ Tip-Adapter-F ------------------------------------------
-        best_acc = run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, test_features, test_labels, clip_weights, clip_model, train_loader_F, dataset.template)
+        best_acc = run_tip_adapter_F(cfg, test_features, test_labels, clip_weights, clip_model, train_loader_F, dataset.template)
 
         origin_acc[("origin_acc"+str(seed))] = best_acc
     
     file_path = "./output/" + str(cfg['dataset']) + '.json'
     values = list(origin_acc.values())
-    mean = sum(values) / len(values)
-    origin_acc["mean"] = mean
-    origin_acc["task"] = "loss=contrastive+crossentropy"
-    # if not os.path.exists(file_path):
-    #     os.makedirs(os.path.dirname(file_path))
+    mean_accuracy = round(np.mean(values), 3)
+    variance_accuracy = round(np.var(values), 3)
+    origin_acc["mean"] = mean_accuracy 
+    origin_acc["var"] = variance_accuracy
+    origin_acc["task"] = "CLIP-Adapter, Crossentropy -D1024-contrastive"
     with open(file_path, 'a',encoding='utf-8') as file:
         json.dump(origin_acc, file, indent=4, ensure_ascii=False)
            

@@ -1,29 +1,43 @@
 {
-    "origin_acc0": 89.12510220768601,
-    "origin_acc1": 89.67020986644863,
-    "origin_acc2": 89.20686835650041,
-    "mean": 89.334,
-    "var": 0.058,
-    "task": "CLIP-Adapter, Crossentropy -D1"
+    "origin_acc0": 87.46252384846007,
+    "origin_acc1": 85.772690106296,
+    "origin_acc2": 86.91741618969746,
+    "mean": 86.718,
+    "var": 0.496,
+    "task": "CLIP-Adapter, Crossentropy -D1024"
 }{
-    "origin_acc0": 92.6137912237667,
-    "origin_acc1": 92.75006813845735,
-    "origin_acc2": 92.0686835650041,
-    "mean": 92.478,
-    "var": 0.087,
-    "task": "CLIP-Adapter, Crossentropy -D1-ratio"
+    "origin_acc0": 92.91360043608613,
+    "origin_acc1": 92.80457890433361,
+    "origin_acc2": 92.4502589261379,
+    "mean": 92.723,
+    "var": 0.039,
+    "task": "CLIP-Adapter, Crossentropy -D1024-ratio"
 }{
-    "origin_acc0": 92.4502589261379,
-    "origin_acc1": 91.9869174161897,
-    "origin_acc2": 92.23221586263287,
-    "mean": 92.223,
+    "origin_acc0": 92.5320250749523,
+    "origin_acc1": 92.259471245571,
+    "origin_acc2": 92.55928045789044,
+    "mean": 92.45,
+    "var": 0.018,
+    "task": "CLIP-Adapter, Crossentropy -D1024-ratio-contrastive"
+}{
+    "origin_acc0": 92.01417279912783,
+    "origin_acc1": 91.76887435268466,
+    "origin_acc2": 91.55083128917961,
+    "mean": 91.778,
     "var": 0.036,
-    "task": "CLIP-Adapter, Crossentropy -D1-ratio-contrastive"
+    "task": "CLIP-Adapter, Crossentropy -D1024-ratio-contrastive-alpha"
 }{
-    "origin_acc0": 89.75197601526301,
-    "origin_acc1": 89.37040065412918,
-    "origin_acc2": 89.69746524938675,
-    "mean": 89.607,
-    "var": 0.028,
-    "task": "CLIP-Adapter, Crossentropy -D1-contrastive"
+    "origin_acc0": 89.09784682474789,
+    "origin_acc1": 88.7435268465522,
+    "origin_acc2": 89.23412373943854,
+    "mean": 89.025,
+    "var": 0.043,
+    "task": "CLIP-Adapter, Crossentropy -D1024-contrastive"
+}{
+    "origin_acc0": 89.23412373943854,
+    "origin_acc1": 88.63450531479967,
+    "origin_acc2": 88.06214227309894,
+    "mean": 88.644,
+    "var": 0.229,
+    "task": "CLIP-Adapter, Crossentropy -D1024-contrastive-alpha"
 }

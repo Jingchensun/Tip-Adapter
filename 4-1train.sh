@@ -1,7 +1,7 @@
 # CUDA_VISIBLE_DEVICES=2 python main4.py --config configs/oxford_pets.yaml
 # CUDA_VISIBLE_DEVICES=2 python main4.py --config configs/fgvc.yaml
-# CUDA_VISIBLE_DEVICES=2 python main4.py --config configs/dtd.yaml
-CUDA_VISIBLE_DEVICES=3 python main4.py --config configs/eurosat.yaml
+CUDA_VISIBLE_DEVICES=2 python main4-1.py --config configs/dtd.yaml
+CUDA_VISIBLE_DEVICES=2 python main4-1.py --config configs/eurosat.yaml
 # CUDA_VISIBLE_DEVICES=2 python main4.py --config configs/stanford_cars.yaml
 # CUDA_VISIBLE_DEVICES=2 python main4.py --config configs/sun397.yaml
 
