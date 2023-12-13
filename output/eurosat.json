@@ -1,35 +1,8 @@
 {
-    "origin_acc0": 85.72839506172839,
-    "origin_acc1": 87.82716049382717,
-    "origin_acc2": 86.82716049382717,
-    "mean": 86.79423868312756
-}{
-    "origin_acc0": 81.71604938271605,
-    "origin_acc1": 86.62962962962963,
-    "origin_acc2": 85.34567901234568,
-    "mean": 84.56378600823045
-}{
-    "origin_acc0": 84.9753086419753,
-    "origin_acc1": 87.71604938271605,
-    "origin_acc2": 86.8395061728395,
-    "mean": 86.51028806584361,
-    "task": "loss=contrastive+crossentropy"
-}{
-    "origin_acc0": 82.5925925925926,
-    "origin_acc1": 86.50617283950618,
-    "origin_acc2": 85.96296296296296,
-    "mean": 85.02057613168725,
-    "task": "loss=contrastive+crossentropy-scale100"
-}{
-    "origin_acc0": 81.39506172839506,
-    "origin_acc1": 85.70370370370371,
-    "origin_acc2": 81.14814814814815,
-    "mean": 82.74897119341564,
-    "task": "loss=contrastive+crossentropy-scale100-more augmentation"
-}{
-    "origin_acc0": 74.18518518518519,
-    "origin_acc1": 76.65432098765432,
-    "origin_acc2": 71.54320987654322,
-    "mean": 74.1275720164609,
-    "task": "loss=contrastive+crossentropy-scale100-RenyiCL augmentation"
+    "origin_acc0": 80.0246913580247,
+    "origin_acc1": 80.11111111111111,
+    "origin_acc2": 80.90123456790124,
+    "mean": 80.346,
+    "var": 0.156,
+    "task": "Crossentropy -D1024-ratio"
 }

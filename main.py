@@ -3,6 +3,7 @@ import random
 import argparse
 import yaml
 from tqdm import tqdm
+import numpy as np
 
 import torch
 import torch.nn.functional as F
@@ -21,6 +22,7 @@ import renyicl.loader
 import renyicl.optimizer
 from timm.data.auto_augment import rand_augment_transform
 from timm.data.random_erasing import RandomErasing
+
 
 device = "cuda:0" if torch.cuda.is_available() else "cpu"
 a_u = 1
@@ -98,7 +100,7 @@ class CustomCLIP(nn.Module):
         self.text_encoder = clip_model.encode_text
         self.logit_scale = clip_model.logit_scale
         self.dtype = clip_model.dtype
-        self.adapter = Adapter(512, 4).to(clip_model.dtype)
+        self.adapter = Adapter(1024, 4).to(clip_model.dtype)
 
             
     def forward(self, image):
@@ -166,7 +168,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
 
     beta, alpha = cfg['init_beta'], cfg['init_alpha']
     best_acc, best_epoch = 0.0, 0
-    cfg['train_epoch'] = 100
+    cfg['train_epoch'] = 20
     for train_idx in range(cfg['train_epoch']): #cfg['train_epoch']
         # Train
         model.train().cuda()
@@ -188,12 +190,14 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
                 text_features = clip_model.encode_text(text)
                 text_features /= text_features.norm(dim=-1, keepdim=True)
             affinity =model(image_features)
-            clip_logits = 100. * torch.exp(affinity @ text_features.t())
+            ratio = 0.2
+            affinity = ratio * affinity + (1 - ratio) * image_features
+            clip_logits = 100. * (affinity @ text_features.t())
             # print("clip_logits:", clip_logits)
             groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
             # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
             # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values # cache_values torch.Size([1616, 101])
-            clip_logits2 = 100. * torch.exp(affinity @ clip_weights)
+            clip_logits2 = 100. * (affinity @ clip_weights)
             # tip_logits = clip_logits + cache_logits * alpha
             # print("tip_logits:", tip_logits.size())
             # print("cache_logits:", cache_logits.size())
@@ -202,9 +206,9 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             loss2 = F.cross_entropy(clip_logits.T, groundtruth)
             loss12 = (loss1 + loss2)/2
             loss3 = F.cross_entropy(clip_logits2, target)
-            loss = loss12 + loss3
+            loss = loss3
 
-            tip_logits = 100. * torch.exp(affinity @ clip_weights)
+            tip_logits = 100. * (affinity @ clip_weights)
             # print("tip_logits:", tip_logits)
             acc = cls_acc(tip_logits, target)
             correct_samples += acc / 100 * len(tip_logits)
@@ -223,11 +227,14 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
         model.eval()
 
         affinity = model(test_features)
+        ratio = 0.2
+        affinity = ratio * affinity + (1 - ratio) * test_features
         # clip_logits = torch.exp(affinity @ text_features.t())
         # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values
         # clip_logits = 100. * test_features @ clip_weights
         # tip_logits = clip_logits + cache_logits * alpha
-        tip_logits = 100. * torch.exp(affinity @ clip_weights)
+
+        tip_logits = 100. * (affinity @ clip_weights)
 
         acc = cls_acc(tip_logits, test_labels)
 
@@ -290,15 +297,6 @@ def main():
         val_loader = build_data_loader(dataset.template, data_source=dataset.val, batch_size=64, is_train=False, tfm=preprocess, shuffle=False)
         test_loader = build_data_loader(dataset.template, data_source=dataset.test, batch_size=64, is_train=False, tfm=preprocess, shuffle=False)
 
-        train_tranform = transforms.Compose([
-            transforms.RandomResizedCrop(size=224, scale=(0.5, 1), interpolation=transforms.InterpolationMode.BICUBIC),
-            transforms.RandomHorizontalFlip(p=0.5),
-            transforms.RandomApply([transforms.ColorJitter(0.4, 0.4, 0.4, 0.1)], p=0.8),
-            transforms.RandomGrayscale(p=0.2),
-            transforms.ToTensor(),
-            transforms.Normalize(mean=(0.48145466, 0.4578275, 0.40821073), std=(0.26862954, 0.26130258, 0.27577711))
-        ])
-
         # train_tranform = transforms.Compose([
         #     transforms.RandomResizedCrop(size=224, scale=(0.5, 1), interpolation=transforms.InterpolationMode.BICUBIC),
         #     transforms.RandomHorizontalFlip(p=0.5),
@@ -307,29 +305,12 @@ def main():
         #     transforms.ToTensor(),
         #     transforms.Normalize(mean=(0.48145466, 0.4578275, 0.40821073), std=(0.26862954, 0.26130258, 0.27577711))
         # ])
-        rgb_mean = [0.48145466, 0.4578275, 0.40821073]
-        ra_params = dict(
-            translate_const=int(224 * 0.45),
-            img_mean=tuple([min(255, round(255 * x)) for x in rgb_mean]),
-        )
-
         train_tranform = transforms.Compose([
-        transforms.RandomResizedCrop(224, scale=(0.08, 1.)),
-        transforms.RandomHorizontalFlip(),
-        transforms.RandomApply([
-            transforms.ColorJitter(0.4, 0.4, 0.2, 0.1)  # not strengthened
-        ], p=0.8),
-        transforms.RandomApply([renyicl.loader.GaussianBlur([.1, 2.])], p=0.1),
-        rand_augment_transform('rand-n{}-m{}-mstd0.5'.format(2,10), ra_params),
-        transforms.RandomApply([renyicl.loader.Solarize()], p=0.2),
-        transforms.RandomGrayscale(p=0.2),
+        transforms.RandomResizedCrop(size=224, scale=(0.5, 1), interpolation=transforms.InterpolationMode.BICUBIC),
+        transforms.RandomHorizontalFlip(p=0.5),
         transforms.ToTensor(),
-        transforms.Normalize(mean=(0.48145466, 0.4578275, 0.40821073), std=(0.26862954, 0.26130258, 0.27577711)),
-        transforms.RandomApply(
-            [RandomErasing(0.2, mode='pixel', max_count=1, device='cpu')], 
-        p=0.)
+        transforms.Normalize(mean=(0.48145466, 0.4578275, 0.40821073), std=(0.26862954, 0.26130258, 0.27577711))
         ])
-
         train_loader_cache = build_data_loader(dataset.template, data_source=dataset.train_x, batch_size=256, tfm=train_tranform, is_train=True, shuffle=False)
         train_loader_F = build_data_loader(dataset.template, data_source=dataset.train_x, batch_size=256, tfm=train_tranform, is_train=True, shuffle=True)
 
@@ -359,9 +340,10 @@ def main():
     
     file_path = "./output/" + str(cfg['dataset']) + '.json'
     values = list(origin_acc.values())
-    mean = sum(values) / len(values)
-    origin_acc["mean"] = mean
-    origin_acc["task"] = "loss=contrastive+crossentropy-scale100-RenyiCL augmentation"
+    # mean = sum(values) / len(values)
+    origin_acc["mean"] = round(np.mean(values), 3)
+    origin_acc["var"] = round(np.var(values), 3)
+    origin_acc["task"] = "Crossentropy -D1024-ratio"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:
