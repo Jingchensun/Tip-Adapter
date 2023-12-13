@@ -1,0 +1,8 @@
+{
+    "origin_acc0": 95.33089727974016,
+    "origin_acc1": 95.69630531871701,
+    "origin_acc2": 95.5339017458384,
+    "mean": 95.52,
+    "var": 0.022,
+    "task": "Crossentropy -D1024-ratio"
+}
