@@ -112,7 +112,10 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
         adapter.eval()
 
         affinity = adapter(test_features)
-        cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values
+        # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values
+        # print("cache_logits:", cache_logits)
+        cache_logits = (beta * affinity - beta).exp() @ cache_values
+
         clip_logits = 100. * test_features @ clip_weights
         tip_logits = clip_logits + cache_logits * alpha
         acc = cls_acc(tip_logits, test_labels)
@@ -134,6 +137,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
     print("\n-------- Evaluating on the test set. --------")
    
     affinity = adapter(test_features)
+    # print("torch.exp(beta):", best_beta.exp())
     cache_logits = ((-1) * (best_beta - best_beta * affinity)).exp() @ cache_values
     
     tip_logits = clip_logits + cache_logits * best_alpha
