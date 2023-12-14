@@ -142,6 +142,7 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
 
         # Eval
         model.eval()
+        # print("test_features.size()",test_features.size())
 
         affinity = model(test_features)
         ratio = 0.2
@@ -260,7 +261,7 @@ def main():
     # mean = sum(values) / len(values)
     origin_acc["mean"] = round(np.mean(values), 3)
     origin_acc["var"] = round(np.var(values), 3)
-    origin_acc["task"] = "Crossentropy -D1024-ratio-alpha-exp"
+    origin_acc["task"] = "Crossentropy -D1024-ratio-alpha-exp-init-1"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:
