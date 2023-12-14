@@ -40,4 +40,11 @@
     "mean": 71.16,
     "var": 0.014,
     "task": "Crossentropy -D1024-ratio-alpha-log-init-1"
+}{
+    "origin_acc0": 92.52943564758425,
+    "origin_acc1": 93.42265529841657,
+    "origin_acc2": 93.78806333739342,
+    "mean": 93.247,
+    "var": 0.28,
+    "task": "Crossentropy -D1024-ratio-alpha-old"
 }
