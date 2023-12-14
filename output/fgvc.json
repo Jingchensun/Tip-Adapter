@@ -26,4 +26,18 @@
     "mean": 37.384,
     "var": 0.103,
     "task": "Crossentropy -D1024-ratio-alpha-exp-init-0.5"
+}{
+    "origin_acc0": 36.933693369336936,
+    "origin_acc1": 35.913591359135914,
+    "origin_acc2": 37.413741374137416,
+    "mean": 36.754,
+    "var": 0.391,
+    "task": "Crossentropy -D1024-ratio-alpha-log-init-10"
+}{
+    "origin_acc0": 25.262526252625264,
+    "origin_acc1": 24.782478247824784,
+    "origin_acc2": 24.752475247524753,
+    "mean": 24.932,
+    "var": 0.055,
+    "task": "Crossentropy -D1024-ratio-alpha-log-init-1"
 }

@@ -114,7 +114,8 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             groundtruth = torch.arange(len(images), dtype=torch.long).cuda()
             # affinity = adapter(image_features) #cache_keys torch.Size([512, 1616])
             # cache_logits = ((-1) * (beta - beta * affinity)).exp() @ cache_values # cache_values torch.Size([1616, 101])
-            clip_logits2 = 100. * (torch.exp(model.alpha) * affinity @ clip_weights)
+            # clip_logits2 = 100. * (torch.exp(model.alpha) * affinity @ clip_weights)
+            clip_logits2 = 100. * ((torch.exp(model.alpha) * affinity @ clip_weights) + (image_features @ clip_weights))
             # tip_logits = clip_logits + cache_logits * alpha
             # print("tip_logits:", tip_logits.size())
             # print("cache_logits:", cache_logits.size())
@@ -125,7 +126,8 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
             loss3 = F.cross_entropy(clip_logits2, target)
             loss = loss3
             print("torch.exp(model.alpha):", torch.exp(model.alpha))
-            tip_logits = 100. * (torch.exp(model.alpha) * affinity @ clip_weights)
+            # tip_logits = 100. * (torch.exp(model.alpha) * affinity @ clip_weights)
+            tip_logits = 100. * ((torch.exp(model.alpha) * affinity @ clip_weights) + (image_features @ clip_weights))
             # print("tip_logits:", tip_logits)
             acc = cls_acc(tip_logits, target)
             correct_samples += acc / 100 * len(tip_logits)
@@ -152,7 +154,8 @@ def run_tip_adapter_F(cfg, cache_keys, cache_values, val_features, val_labels, t
         # clip_logits = 100. * test_features @ clip_weights
         # tip_logits = clip_logits + cache_logits * alpha
 
-        tip_logits = 100. * (torch.exp(model.alpha) * affinity @ clip_weights)
+       #tip_logits = 100. * (torch.exp(model.alpha) * affinity @ clip_weights)
+        tip_logits = 100. * ((torch.exp(model.alpha) * affinity @ clip_weights) + (test_features @ clip_weights))
 
         acc = cls_acc(tip_logits, test_labels)
 
@@ -261,7 +264,7 @@ def main():
     # mean = sum(values) / len(values)
     origin_acc["mean"] = round(np.mean(values), 3)
     origin_acc["var"] = round(np.var(values), 3)
-    origin_acc["task"] = "Crossentropy -D1024-ratio-alpha-exp-init-1"
+    origin_acc["task"] = "Crossentropy -D1024-ratio-alpha-old"
     # if not os.path.exists(file_path):
     #     os.makedirs(os.path.dirname(file_path))
     with open(file_path, 'a',encoding='utf-8') as file:
