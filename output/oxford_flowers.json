@@ -47,4 +47,11 @@
     "mean": 93.247,
     "var": 0.28,
     "task": "Crossentropy -D1024-ratio-alpha-old"
+}{
+    "origin_acc0": 91.31140885099472,
+    "origin_acc1": 92.6512383272432,
+    "origin_acc2": 92.12342671538774,
+    "mean": 92.029,
+    "var": 0.304,
+    "task": "Crossentropy -D1024-ratio-alpha-beta"
 }
